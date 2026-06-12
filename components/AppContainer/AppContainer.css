@@ -1,0 +1,35 @@
+.account-bar-wrapper {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: 5px 10px;
+   border-bottom: 1px solid #e2e2e2;
+}
+
+.account-bar-wrapper .account-bar {
+   width: 100%;
+   max-width: 1200px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.account-bar-wrapper .account-bar .app-icon {
+   width: 100%;
+   height: 100%;
+   display: flex;
+   align-items: center;
+}
+
+.account-bar-wrapper .account-bar .app-icon .app-icon-clickable {
+   width: fit-content;
+   height: 100%;
+   cursor: pointer;
+}
+
+.account-bar-wrapper .account-bar .account-image {
+   width: fit-content;
+   height: 100%;
+   cursor: pointer;
+}

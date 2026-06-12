@@ -1,0 +1,21 @@
+{
+   "name": "MinWeb Lead Finder",
+   "short_name": "MinWeb Lead Finder",
+   "description": "An app to manage leads and call them for MinWeb",
+   "background_color": "#ffffff",
+   "theme_color": "#ffffff",
+   "icons": [
+      {
+         "src": "/mobile-logo.png",
+         "sizes": "192x192",
+         "type": "image/png"
+      }
+   ],
+   "start_url": "/",
+   "display": "standalone",
+   "orientation": "portrait",
+   "lang": "en",
+   "dir": "ltr",
+   "categories": ["productivity"]
+}
+ 

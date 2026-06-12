@@ -1,0 +1,78 @@
+.select {
+   width: fit-content;
+   min-width: 60px;
+   border-radius: 12px;
+   border: 1px solid #ededed;
+   background-color: white;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   position: relative;
+   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.098);
+}
+
+.select .selected-option {
+   width: 100%;
+   height: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 0.6rem;
+   cursor: pointer;
+   white-space: nowrap;
+}
+
+.select .selected-option .content {
+   width: 100%;
+   height: 100%;
+   padding: 8px 14px;
+   display: flex;
+   align-items: center;
+   gap: 5px;
+   background-color: transparent;
+}
+
+.select .selected-option .arrow {
+   width: fit-content;
+   height: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: 0 12px;
+}
+
+.select .options-list {
+   position: absolute;
+   z-index: 10;
+   top: calc(100% + 5px);
+   left: 0;
+   background-color: white;
+   border: 1px solid #ededed;
+   display: flex;
+   flex-direction: column;
+   gap: 5px;
+   min-width: 100%;
+   width: fit-content;
+   max-height: 300px;
+   padding: 5px;
+   border-radius: 12px;
+   overflow-y: scroll;
+   overflow-x: hidden;
+   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.027);
+}
+
+.select .options-list .option {
+   width: 100%;
+   padding: 8px 12px;
+   display: flex;
+   align-items: center;
+   border-radius: 10px;
+   gap: 5px;
+   white-space: nowrap;
+}
+
+.select .options-list .option:hover {
+   background: #f5f5f5;
+   cursor: pointer;
+   user-select: none;
+}

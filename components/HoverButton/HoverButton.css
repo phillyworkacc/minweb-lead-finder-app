@@ -1,0 +1,12 @@
+button.hover-button {
+   background-color: transparent;
+   color: black;
+   border-radius: 15px;
+   box-shadow: none;
+   padding: 10px;
+}
+
+button.hover-button:hover {
+   background: #efefef;
+   scale: 1;
+}

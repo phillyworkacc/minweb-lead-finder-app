@@ -1,0 +1,25 @@
+.card {
+   width: 100%;
+   background-color: white;
+   border-radius: 15px;
+   border: 1px solid #ececec;
+   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.098);
+}
+
+.loading-card {
+   background-color: #e0e0e0;
+   border-radius: 10px;
+   animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+   0% {
+      background-color: #e0e0e0;
+   }
+   50% {
+      background-color: #f0f0f0;
+   }
+   100% {
+      background-color: #e0e0e0;
+   }
+}

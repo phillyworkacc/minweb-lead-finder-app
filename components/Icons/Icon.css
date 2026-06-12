@@ -1,0 +1,15 @@
+.icon {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.icon img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   object-position: center;
+   -webkit-user-drag: none;
+}
+.icon.round { border-radius: 100% !important; }
+.icon.round img { border-radius: 100% !important; }

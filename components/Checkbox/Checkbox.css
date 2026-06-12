@@ -1,0 +1,16 @@
+.check-box-check {
+   width: fit-content;
+   height: fit-content;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: 2px;
+   border: 1px solid #bebebe;
+   border-radius: 6px;
+}
+
+.check-box-check.checked {
+   background-color: #1121ff;
+   border-color: #1121ff;
+   color: white;
+}
