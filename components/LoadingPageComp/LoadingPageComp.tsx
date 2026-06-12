@@ -1,5 +1,5 @@
 'use client'
-import { AppWrapper } from "../AppContainer/AppContainer";
+import AppWrapper from "../AppContainer/AppContainer";
 import LoadingCard from "@/components/Card/LoadingCard";
 import Spacing from "@/components/Spacing/Spacing";
 
