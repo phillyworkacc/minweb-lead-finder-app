@@ -192,7 +192,9 @@ export default function LeadsTable ({ title, showFound, showSearch, leads, onCli
                               <Link href={`https://google.com/search?q=${lead.name} ${lead.address}`} target='_blank'>
                                  <button className="xxxxs pd-1 pdx-15 border-radius-15"><Search size={14} /> Search</button>
                               </Link>
-                              <button className="xxxxs pd-1 pdx-15 border-radius-15"><Phone size={14} /> Call</button>
+                              <Link href={`tel:${lead.phoneNumber}`} target='_blank'>
+                                 <button className="xxxxs pd-1 pdx-15 border-radius-15"><Phone size={14} /> Call</button>
+                              </Link>
                            </div>
                         </td>
                         {/* <td 
