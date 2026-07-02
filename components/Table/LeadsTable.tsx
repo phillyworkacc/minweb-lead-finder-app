@@ -3,11 +3,12 @@ import './Table.css'
 import { BusinessIcon } from '../Icons/Icon';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Star } from 'lucide-react';
+import { Phone, Search, Star } from 'lucide-react';
 import { updateLeadColdCall, updateLeadStarred } from '@/app/actions/leads';
 import { copyToClipboard } from '@/lib/str';
 import Select from '../Select/Select';
 import Checkbox from '../Checkbox/Checkbox';
+import Link from 'next/link';
 
 type ClientsTableProps = {
    title?: string;
@@ -159,6 +160,9 @@ export default function LeadsTable ({ title, showFound, showSearch, leads, onCli
                   <tr id='head-row'>
                      <th style={{textAlign:"center"}}>#</th>
                      <th>Name</th>
+                     <th>Phone Number</th>
+                     <th>Website</th>
+                     <th>Actions</th>
                      {/* <th>Address</th>
                      <th style={{textAlign:"center"}}>Phone Number</th>
                      <th style={{textAlign:"center"}}>Website</th>
@@ -181,6 +185,16 @@ export default function LeadsTable ({ title, showFound, showSearch, leads, onCli
                            className='name'
                            onClick={() => { if (onClickLead) onClickLead(lead); }}
                         >{lead?.name!}</td>
+                        <td>{lead.phoneNumber}</td>
+                        <td>{lead.website}</td>
+                        <td>
+                           <div className="box full dfb align-center gap-10 wrap">
+                              <Link href={`https://google.com/search?q=${lead.name} ${lead.address}`} target='_blank'>
+                                 <button className="xxxxs pd-1 pdx-15 border-radius-15"><Search size={14} /> Search</button>
+                              </Link>
+                              <button className="xxxxs pd-1 pdx-15 border-radius-15"><Phone size={14} /> Call</button>
+                           </div>
+                        </td>
                         {/* <td 
                            onClick={() => { if (lead.address) copyToClipboard(lead?.address); }}
                         >

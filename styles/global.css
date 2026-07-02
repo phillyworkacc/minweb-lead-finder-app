@@ -431,19 +431,19 @@ textarea.xl { font-size: 2rem; }
 textarea.xxl { font-size: 2.15rem; }
 textarea.xxxl { font-size: 2.15rem; }
 
-textarea.border-radius-5 { border-radius: 5px; }
-textarea.border-radius-6 { border-radius: 6px; }
-textarea.border-radius-7 { border-radius: 7px; }
-textarea.border-radius-8 { border-radius: 8px; }
-textarea.border-radius-9 { border-radius: 9px; }
-textarea.border-radius-10 { border-radius: 10px; }
-textarea.border-radius-11 { border-radius: 11px; }
-textarea.border-radius-12 { border-radius: 12px; }
-textarea.border-radius-13 { border-radius: 13px; }
-textarea.border-radius-14 { border-radius: 14px; }
-textarea.border-radius-15 { border-radius: 15px; }
-textarea.border-radius-20 { border-radius: 20px; }
-textarea.border-radius-25 { border-radius: 25px; }
-textarea.border-radius-30 { border-radius: 30px; }
+button.border-radius-5, input.border-radius-5, textarea.border-radius-5 { border-radius: 5px; }
+button.border-radius-6, input.border-radius-6, textarea.border-radius-6 { border-radius: 6px; }
+button.border-radius-7, input.border-radius-7, textarea.border-radius-7 { border-radius: 7px; }
+button.border-radius-8, input.border-radius-8, textarea.border-radius-8 { border-radius: 8px; }
+button.border-radius-9, input.border-radius-9, textarea.border-radius-9 { border-radius: 9px; }
+button.border-radius-10, input.border-radius-10, textarea.border-radius-10 { border-radius: 10px; }
+button.border-radius-11, input.border-radius-11, textarea.border-radius-11 { border-radius: 11px; }
+button.border-radius-12, input.border-radius-12, textarea.border-radius-12 { border-radius: 12px; }
+button.border-radius-13, input.border-radius-13, textarea.border-radius-13 { border-radius: 13px; }
+button.border-radius-14, input.border-radius-14, textarea.border-radius-14 { border-radius: 14px; }
+button.border-radius-15, input.border-radius-15, textarea.border-radius-15 { border-radius: 15px; }
+button.border-radius-20, input.border-radius-20, textarea.border-radius-20 { border-radius: 20px; }
+button.border-radius-25, input.border-radius-25, textarea.border-radius-25 { border-radius: 25px; }
+button.border-radius-30, input.border-radius-30, textarea.border-radius-30 { border-radius: 30px; }
 
 .no-trans { transition: none; }
