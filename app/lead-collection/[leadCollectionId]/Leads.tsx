@@ -11,6 +11,7 @@ import AwaitButton from '@/components/AwaitButton/AwaitButton';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 import EditLeadCollectionName from '@/components/Forms/EditLeadCollectionName';
 import MultiActionDropdown from '@/components/MultiActionDropdown/MultiActionDropdown';
+import LeadCards from '@/components/Table/LeadCards';
 
 type LeadCollectionPageProps = {
    leadCollectionName: string;
@@ -84,7 +85,7 @@ export default function LeadCollectionPage ({ leads, leadCollectionName, leadCol
             Contains {leads.length} {pluralSuffixer('lead', leads.length, 's')}
          </div>
          <div className="box full dfb column gap-5">
-            <LeadsTable 
+            <LeadCards 
                leads={leads} 
                onClickLead={(lead) => router.push(`/lead-collection/${lead.leadCollectionsId}/${lead.leadId}`)}
                showSearch showCalled showStarred
