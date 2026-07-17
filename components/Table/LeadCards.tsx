@@ -31,12 +31,15 @@ interface Filters extends Record<string, null | boolean> {
 function StarToggler ({ starred, onToggleStarred }: { starred: boolean, onToggleStarred: (starred: boolean) => void; }) {
    const [starredState, setStarredState] = useState(starred);
    return (
-      <div className="box full dfb align-center justify-center" onClick={() => {
-         onToggleStarred(!starredState);
-         setStarredState(prev => !prev);
-      }}>
+      <div 
+         className="box fit dfb align-center justify-center pdx-1" 
+         onClick={() => {
+            onToggleStarred(!starredState);
+            setStarredState(prev => !prev);
+         }}
+      >
          <Star
-            size={17}
+            size={20}
             color={starredState ? '#ffa600' : '#000'}
             fill={starredState ? '#ffa600' : '#fff'}
          />
@@ -176,6 +179,7 @@ export default function LeadCards ({ title, showFound, showSearch, leads, onClic
                      <Link href={`tel:${lead.phoneNumber}`} target='_blank'>
                         <button className="xxxxs pd-1 pdx-15 border-radius-15 whitespace-nowrap"><Phone size={14} /> Call</button>
                      </Link>
+                     <StarToggler starred={lead.starred} onToggleStarred={starred => onToggleStarred(lead, starred)} />
                   </div>
                </Card>
             ))}
