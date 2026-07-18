@@ -10,6 +10,7 @@ import Select from '../Select/Select';
 import Checkbox from '../Checkbox/Checkbox';
 import Link from 'next/link';
 import Card from '../Card/Card';
+import Spacing from '../Spacing/Spacing';
 
 type ClientsTableProps = {
    title?: string;
@@ -29,10 +30,11 @@ interface Filters extends Record<string, null | boolean> {
 }
 
 function StarToggler ({ starred, onToggleStarred }: { starred: boolean, onToggleStarred: (starred: boolean) => void; }) {
-   const [starredState, setStarredState] = useState(starred);
+   const [starredState, setStarredState] = useState<boolean>(starred);
    return (
       <div 
-         className="box fit dfb align-center justify-center pdx-1" 
+         className="box fit dfb align-center justify-center pdx-1 cursor-pointer" 
+         style={{ background: "#ececec", border: "1px solid #ccc", borderRadius: "10px" }}
          onClick={() => {
             onToggleStarred(!starredState);
             setStarredState(prev => !prev);
@@ -40,8 +42,8 @@ function StarToggler ({ starred, onToggleStarred }: { starred: boolean, onToggle
       >
          <Star
             size={20}
-            color={starredState ? '#ffa600' : '#000'}
-            fill={starredState ? '#ffa600' : '#fff'}
+            color={starred ? '#ffa600' : '#000'}
+            fill={starred ? '#ffa600' : '#ececec'}
          />
       </div>
    )
@@ -75,7 +77,7 @@ export default function LeadCards ({ title, showFound, showSearch, leads, onClic
    const onToggleStarred = async (lead: Lead, starred: boolean) => {
       const updated = await updateLeadStarred(lead.leadId, lead.leadCollectionsId, starred);
       if (updated) {
-         toast.success(`Starred ${lead.name}`);
+         toast.success(starred ? `Starred ${lead.name}` : `Un-starred ${lead.name}`);
       } else {
          toast.error("Failed to star lead");
       }
@@ -109,8 +111,8 @@ export default function LeadCards ({ title, showFound, showSearch, leads, onClic
    }
 
    const leadCardStyle: React.CSSProperties = {
-      padding: "20px", width: "100%",
-      maxWidth: "380px"
+      padding: "25px", width: "100%",
+      maxWidth: "550px"
    }
 
    return (
@@ -166,24 +168,45 @@ export default function LeadCards ({ title, showFound, showSearch, leads, onClic
          <div className="box full dfb wrap gap-10">
             {applyFilters(leads).map((lead, index) => (
                <Card key={index} styles={leadCardStyle}>
-                  <div className="box full dfb align-center mb-1">
-                     <BusinessIcon url={lead.website!} size={50} round />
+                  <div className="box full dfb mb-1">
+                     <div className="box full">
+                        <div className="text-xs full bold-600">{lead?.name!}</div>
+                        <div className="text-xxxs full grey-5 pd-1">{lead?.address!}</div>
+                        {(lead.website) ? (<Link 
+                           href={lead?.website!} 
+                           className="text-xxxs full pd-05 grey-5 visible-link" 
+                           target='_blank'
+                        >{websiteFormatting(lead?.website!)}</Link>) : (<></>)}
+                     </div>
+                     <div className="box fit">
+                        <div className="box full dfb align-center">
+                           <BusinessIcon url={lead.website!} size={50} round />
+                        </div>
+                     </div>
                   </div>
-                  <div className="text-xs full bold-600">{lead?.name!}</div>
-                  <div className="text-xxxs full pd-05">{lead?.phoneNumber!}</div>
-                  <div className="text-xxxs full mb-1">{lead?.website!}</div>
-                  <div className="box full dfb wrap gap-10">
-                     <Link href={`https://google.com/search?q=${lead.name} ${lead.address}`} target='_blank'>
-                        <button className="xxxxs pd-1 pdx-15 border-radius-15 whitespace-nowrap"><Search size={14} /> Search</button>
-                     </Link>
+                  <div className="box full dfb wrap gap-10 mt-15">
                      <Link href={`tel:${lead.phoneNumber}`} target='_blank'>
-                        <button className="xxxxs pd-1 pdx-15 border-radius-15 whitespace-nowrap"><Phone size={14} /> Call</button>
+                        <button className="xxxxs pd-1 pdx-15 border-radius-15 whitespace-nowrap"><Phone size={14} /> {lead.phoneNumber}</button>
+                     </Link>
+                     <Link href={`https://google.com/search?q=${encodeURIComponent(`${lead.name} ${lead.address}`)}`} target='_blank'>
+                        <button className="xxxxs pd-1 pdx-15 border-radius-15 whitespace-nowrap"><Search size={16} /></button>
                      </Link>
                      <StarToggler starred={lead.starred} onToggleStarred={starred => onToggleStarred(lead, starred)} />
+                     {showCalled && (
+                        <div className="box fit dfb align-center justify-center">
+                           <Select
+                              options={coldCallOptions}
+                              onSelect={(option) => onSelectColdCallOption(lead, option)}
+                              selectedOptionStyle={{ fontSize: "0.9rem" }}
+                              defaultOptionIndex={coldCallOptions.indexOf(lead.called)}
+                           />
+                        </div>
+                     )}
                   </div>
                </Card>
             ))}
          </div>
+         <Spacing size={3} />
       </>
    )
 }
