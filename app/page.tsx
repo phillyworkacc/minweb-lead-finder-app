@@ -8,7 +8,11 @@ import LoadingLeadsPage from './loading'
 export default async function Leads () {
    const leadCollections = await dalDbOperation(async () => {
       const res = await db
-         .select()
+         .select({
+            leadCollectionsId: leadCollectionsTable.leadCollectionsId,
+            name: leadCollectionsTable.name,
+            date: leadCollectionsTable.date,
+         })
          .from(leadCollectionsTable)
          .orderBy(desc(leadCollectionsTable.date));
       

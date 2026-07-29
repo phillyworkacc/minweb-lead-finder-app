@@ -374,7 +374,7 @@ input {
   border-radius: 12px;
   outline: none;
 }
-input:focus { border: 1px solid #bbbbbb; }
+input:focus { border: 1px solid #e0e0e0; }
 input.full { width: 100%; }
 input.normal-w { width: 600px; }
 

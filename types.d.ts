@@ -27,6 +27,12 @@ type WebsiteAuditReport = {
    date: string;
 }
 
+type Folder = {
+   id: string;
+   folderId: string;
+   name: string;
+}
+
 type WebsiteAuditReportExtra = WebsiteAuditReport & {
    name?: string;
 }

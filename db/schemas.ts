@@ -18,7 +18,14 @@ export const leadCollectionsTable = pgTable("lead_collections", {
    id: serial("id").primaryKey(),
    leadCollectionsId: text("lead_collections_id"),
    name: text("name"),
-   date: text("date")
+   date: text("date"),
+   folders: text("folders")
+});
+
+export const foldersTable = pgTable("folders", {
+   id: serial("id").primaryKey(),
+   folderId: text("folder_id"),
+   name: text("name")
 });
 
 export const websiteAuditsTable = pgTable("website_audits", {

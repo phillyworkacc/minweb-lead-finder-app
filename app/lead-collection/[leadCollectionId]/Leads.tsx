@@ -28,7 +28,7 @@ export default function LeadCollectionPage ({ leads, leadCollectionName, leadCol
          const deleted = await deleteLeadCollection(leads[0].leadCollectionsId);
          if (deleted) {
             toast.success("Deleted Lead Collection: " + leadCollectionName);
-            router.push("/leads");
+            router.push("/");
             close();
          } else {
             toast.error("Failed to delete lead collection");
@@ -90,6 +90,7 @@ export default function LeadCollectionPage ({ leads, leadCollectionName, leadCol
                onClickLead={(lead) => router.push(`/lead-collection/${lead.leadCollectionsId}/${lead.leadId}`)}
                showSearch showCalled showStarred
             />
+
          </div>
       </AppWrapper>
    )

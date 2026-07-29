@@ -3,16 +3,6 @@
    position: relative;
 }
 
-.multi-action-dropdown > button.multi-action-btn {
-   width: fit-content;
-   box-shadow: none;
-   border: 1px solid #ededed;
-   background: #f7f7f7;
-   border-radius: 5px;
-   color: black;
-   padding: 5px 5px;
-}
-
 .multi-action-dropdown-box {
    position: absolute;
    top: 110%;

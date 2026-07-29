@@ -1,14 +1,15 @@
 .table-container {
    overflow-x: auto;
    border-radius: 10px;
-   background-color: #fff;
+   background-color: #f3f3f3;
+   border: 1px solid #ececec;
 }
 
 .leads-table {
    width: max-content;
    min-width: 100%;
    border-collapse: collapse;
-   background-color: #fff;
+   background-color: #f3f3f3;
    padding: 5px;
    border-radius: 10px;
    table-layout: auto;
@@ -20,16 +21,16 @@
    text-align: left;
    width: fit-content;
    max-width: 200px;
-   font-size: 0.85rem;
+   font-size: 0.95rem;
 }
+.leads-table td { padding: 20px; }
 
 .leads-table th {
-   padding: 12px;
+   padding: 17px;
    text-transform: uppercase;
-   font-size: 0.7rem;
-   color: #a8a8a8;
+   font-size: 0.8rem;
+   color: #535353;
    font-weight: 500;
-   border-radius: 6px;
 }
 .leads-table tr:not(:last-child) { border-bottom: 1px solid #f0f0f0; }
 
@@ -37,13 +38,15 @@
 .leads-table tr:hover { cursor: pointer; }
 
 .leads-table thead {
-   background-color: #fff;
+   background-color: #f3f3f3;
    font-size: 1rem;
-   border-radius: 6px;
 }
 
-.leads-table tr:not(#head-row):hover {
-   background-color: #f8f8f8;
+.leads-table tbody tr {
+   background-color: #ffffff;
+}
+.leads-table tbody tr:hover {
+   background-color: #ff5f741e;
 }
 
 .link-display { cursor: pointer; word-break: break-all; color: #910013; }

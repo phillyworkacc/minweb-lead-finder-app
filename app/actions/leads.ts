@@ -6,7 +6,31 @@ import { dalDbOperation } from "@/dal/helpers";
 import { titleCase } from "@/lib/str";
 import { and, eq } from "drizzle-orm";
 
-export async function insertLeads (leads: LeadItemFormatted[], leadCollectionName: string) {
+export async function createLeadCollection (name: string, folderName: string) {
+   try {
+      const leadCollectionsId = uuid();
+      const leadCollectionsName = titleCase(name);
+      const now = Date.now().toString();
+      const folders = ["all", folderName].join(",");
+   
+      const inserted = await dalDbOperation(async () => {
+         const res = await db.insert(leadCollectionsTable)
+            .values({
+               leadCollectionsId,
+               name: leadCollectionsName,
+               folders, date: now
+            });
+         
+         return (res.rowCount === 1);
+      })
+   
+      return inserted.success;
+   } catch (e) {
+      return false;
+   }
+}
+
+export async function insertLeadsWithNewLeadCollection (leads: LeadItemFormatted[], leadCollectionName: string) {
    try {
       const leadCollectionsId = uuid();
       const leadCollectionsName = titleCase(leadCollectionName);
@@ -37,6 +61,30 @@ export async function insertLeads (leads: LeadItemFormatted[], leadCollectionNam
             .values(formattedLeads);
          
          return (res.rowCount === 1 && res2.rowCount === 1);
+      })
+   
+      return inserted.success;
+   } catch (e) {
+      return false;
+   }
+}
+
+export async function insertLeadsWithExistingLeadCollection (leads: LeadItemFormatted[], leadCollectionsId: string) {
+   try {
+      const formattedLeads = leads.map(lead => ({
+         leadCollectionsId,
+         leadId: uuid(),
+         name: lead.name,
+         email: lead.email,
+         address: lead.address,
+         phoneNumber: lead.phoneNumber,
+         website: lead.website, called: "Not Called",
+         date: Date.now().toString()
+      }));
+   
+      const inserted = await dalDbOperation(async () => {
+         const res = await db.insert(leadsTable).values(formattedLeads);
+         return (res.rowCount === 1);
       })
    
       return inserted.success;

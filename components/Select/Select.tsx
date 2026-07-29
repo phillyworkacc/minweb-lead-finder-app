@@ -51,7 +51,7 @@ export default function Select ({ options, defaultOptionIndex, onSelect, style, 
    return (
       <div className="select" style={style}>
          <div className="selected-option" onClick={() => setShowDropdown(prev => !prev)}>
-            <div className="content" style={selectedOptionStyle}><span className={selectedOptionClassName}>{options[initialOption]}</span></div>
+            <div className="content" style={selectedOptionStyle}><span className={selectedOptionClassName} style={selectedOptionStyle}>{options[initialOption]}</span></div>
             <div className="arrow"><ChevronDown size={18} /></div>
          </div>
          {showDropdown && <motion.div 

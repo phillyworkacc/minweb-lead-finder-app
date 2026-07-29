@@ -3,7 +3,7 @@ import './Table.css'
 import { BusinessIcon } from '../Icons/Icon';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
-import { Phone, Search, Star } from 'lucide-react';
+import { Phone, Search, Star, Trash2 } from 'lucide-react';
 import { updateLeadColdCall, updateLeadStarred } from '@/app/actions/leads';
 import { copyToClipboard } from '@/lib/str';
 import Select from '../Select/Select';
@@ -11,6 +11,10 @@ import Checkbox from '../Checkbox/Checkbox';
 import Link from 'next/link';
 import Card from '../Card/Card';
 import Spacing from '../Spacing/Spacing';
+import { useRouter } from 'next/navigation';
+import { useModal } from '../Modal/ModalContext';
+import MultiActionDropdown from '../MultiActionDropdown/MultiActionDropdown';
+import DeleteLead from '@/modals/DeleteLead';
 
 type ClientsTableProps = {
    title?: string;
@@ -49,7 +53,10 @@ function StarToggler ({ starred, onToggleStarred }: { starred: boolean, onToggle
    )
 }
 
-export default function LeadCards ({ title, showFound, showSearch, leads, onClickLead, showCalled, showStarred }: ClientsTableProps) {
+export default function LeadCards ({ title, showFound, showSearch, leads: rawLeads, onClickLead, showCalled, showStarred }: ClientsTableProps) {
+   const router = useRouter();
+   const { showModal } = useModal();
+   const [allLeads, setAllLeads] = useState(rawLeads);
    const [callState, setCallState] = useState<undefined | "Missed" | "Booked" | "Fail" | "Not Answered" | "Not Called">(undefined);
    const [searchLeads, setSearchLeads] = useState('');
    const [filters, setFilters] = useState<Filters>({
@@ -69,6 +76,10 @@ export default function LeadCards ({ title, showFound, showSearch, leads, onClic
       const updated = await updateLeadColdCall(lead.leadId, lead.leadCollectionsId, option);
       if (updated) {
          toast.success("Update Lead Cold Call Status");
+         const newLeads = Array.from(allLeads);
+         const index = newLeads.indexOf(lead);
+         newLeads[index].called = option;
+         setAllLeads(prevLeads => ([ ...newLeads ]))
       } else {
          toast.error("Failed to Update Lead Cold Call Status");
       }
@@ -78,9 +89,24 @@ export default function LeadCards ({ title, showFound, showSearch, leads, onClic
       const updated = await updateLeadStarred(lead.leadId, lead.leadCollectionsId, starred);
       if (updated) {
          toast.success(starred ? `Starred ${lead.name}` : `Un-starred ${lead.name}`);
+         const newLeads = Array.from(allLeads);
+         const index = newLeads.indexOf(lead);
+         newLeads[index].starred = starred;
+         setAllLeads(prevLeads => ([ ...newLeads ]))
       } else {
          toast.error("Failed to star lead");
       }
+   }
+
+   const onDeleteLead = async (lead: Lead) => {
+      showModal({ content: <>
+         <DeleteLead 
+            lead={lead} 
+            afterDeleteSuccess={(leadId) => 
+               setAllLeads(p => ([ ...p.filter(l => l.leadId !== leadId) ]))
+            } 
+         /></>
+      })
    }
 
    const applyFilters = (leads: Lead[]): Lead[] => {
@@ -108,6 +134,7 @@ export default function LeadCards ({ title, showFound, showSearch, leads, onClic
             if (!callState) return true;
             if (lead.called == callState) return true;
          }) // filter for lead call state
+         .sort((a, b) => a.name.localeCompare(b.name))
    }
 
    const leadCardStyle: React.CSSProperties = {
@@ -119,7 +146,7 @@ export default function LeadCards ({ title, showFound, showSearch, leads, onClic
       <>
          <div className="box full mb-1 pdx-05">
             {(title) && (<div className="text-xs full bold-600 pdx-1 pd-1">{title}</div>)}
-            {(showFound) && (<div className="text-xt full grey-4 pdx-1 mb-05">{leads.length} found(s)</div>)}
+            {(showFound) && (<div className="text-xt full grey-4 pdx-1 mb-05">{allLeads.length} found(s)</div>)}
             {(showSearch) && (<div className='box full dfb column'>
                <div className="box full pd-05">
                   <input
@@ -161,12 +188,12 @@ export default function LeadCards ({ title, showFound, showSearch, leads, onClic
                Object.keys(filters).map((k) => filters[k]).includes(true)
             ) && (<div className="box full mb-05">
                <div className="text-xxxs full grey-4 mb-05">
-                  After filters, {applyFilters(leads).filter(lead => lead.name.toLowerCase().includes(searchLeads.toLowerCase())).length} lead(s) found
+                  After filters, {applyFilters(allLeads).filter(lead => lead.name.toLowerCase().includes(searchLeads.toLowerCase())).length} lead(s) found
                </div>
             </div>)}
          </div>
          <div className="box full dfb wrap gap-10">
-            {applyFilters(leads).map((lead, index) => (
+            {applyFilters(allLeads).map((lead, index) => (
                <Card key={index} styles={leadCardStyle}>
                   <div className="box full dfb mb-1">
                      <div className="box full">
@@ -174,7 +201,7 @@ export default function LeadCards ({ title, showFound, showSearch, leads, onClic
                         <div className="text-xxxs full grey-5 pd-1">{lead?.address!}</div>
                         {(lead.website) ? (<Link 
                            href={lead?.website!} 
-                           className="text-xxxs full pd-05 grey-5 visible-link" 
+                           className="text-xxxs fit pd-05 grey-5 visible-link" 
                            target='_blank'
                         >{websiteFormatting(lead?.website!)}</Link>) : (<></>)}
                      </div>
@@ -185,9 +212,9 @@ export default function LeadCards ({ title, showFound, showSearch, leads, onClic
                      </div>
                   </div>
                   <div className="box full dfb wrap gap-10 mt-15">
-                     <Link href={`tel:${lead.phoneNumber}`} target='_blank'>
+                     {(lead.phoneNumber) && (<Link href={`tel:${lead.phoneNumber}`} target='_blank'>
                         <button className="xxxxs pd-1 pdx-15 border-radius-15 whitespace-nowrap"><Phone size={14} /> {lead.phoneNumber}</button>
-                     </Link>
+                     </Link>)}
                      <Link href={`https://google.com/search?q=${encodeURIComponent(`${lead.name} ${lead.address}`)}`} target='_blank'>
                         <button className="xxxxs pd-1 pdx-15 border-radius-15 whitespace-nowrap"><Search size={16} /></button>
                      </Link>
@@ -202,6 +229,15 @@ export default function LeadCards ({ title, showFound, showSearch, leads, onClic
                            />
                         </div>
                      )}
+                  </div>
+                  <div className="box full dfb align-center justify-end gap-10 mt-15">
+                     <div className="text-xxxs grey-5 full">More Actions</div>
+                     <MultiActionDropdown
+                        className='outline-black tiny-shadow'
+                        actions={[
+                           { label: <><Trash2 size={15}/> Delete Lead</>, action: () => onDeleteLead(lead), appearance: "delete" }
+                        ]}
+                     />
                   </div>
                </Card>
             ))}

@@ -3,12 +3,15 @@ import './Table.css'
 import { BusinessIcon } from '../Icons/Icon';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Phone, Search, Star } from 'lucide-react';
+import { ChevronDown, Phone, Search, Star } from 'lucide-react';
 import { updateLeadColdCall, updateLeadStarred } from '@/app/actions/leads';
 import { copyToClipboard } from '@/lib/str';
 import Select from '../Select/Select';
 import Checkbox from '../Checkbox/Checkbox';
 import Link from 'next/link';
+import MultiActionDropdown from '../MultiActionDropdown/MultiActionDropdown';
+import { useModal } from '../Modal/ModalContext';
+import LeadCardView from '@/modals/LeadCardView';
 
 type ClientsTableProps = {
    title?: string;
@@ -27,23 +30,10 @@ interface Filters extends Record<string, null | boolean> {
    isStarred: null | boolean;
 }
 
-function StarToggler ({ starred, onToggleStarred }: { starred: boolean, onToggleStarred: (starred: boolean) => void; }) {
-   const [starredState, setStarredState] = useState(starred);
-   return (
-      <div className="box full dfb align-center justify-center" onClick={() => {
-         onToggleStarred(!starredState);
-         setStarredState(prev => !prev);
-      }}>
-         <Star
-            size={17}
-            color={starredState ? '#ffa600' : '#000'}
-            fill={starredState ? '#ffa600' : '#fff'}
-         />
-      </div>
-   )
-}
-
-export default function LeadsTable ({ title, showFound, showSearch, leads, onClickLead, showCalled, showStarred }: ClientsTableProps) {
+export default function LeadsTable ({ title, showFound, showSearch, leads: leadsFromList, onClickLead, showCalled, showStarred }: ClientsTableProps) {
+   const { showModal } = useModal();
+   const [leads, setLeads] = useState(leadsFromList);
+   const [leadViewCurrentIndex, setLeadViewCurrentIndex] = useState(-1);
    const [callState, setCallState] = useState<undefined | "Missed" | "Booked" | "Fail" | "Not Answered" | "Not Called">(undefined);
    const [searchLeads, setSearchLeads] = useState('');
    const [filters, setFilters] = useState<Filters>({
@@ -53,29 +43,7 @@ export default function LeadsTable ({ title, showFound, showSearch, leads, onCli
       isStarred: null
    });
 
-   const websiteFormatting = (url: string) => {
-      return (url.length > 35) ? `${url.toLowerCase().substring(0,35)}...` : `${url.toLowerCase()}`;
-   }
-
    const coldCallOptions = ["Missed", "Booked", "Fail", "Not Answered", "Not Called"];
-
-   const onSelectColdCallOption = async (lead: Lead, option: string) => {
-      const updated = await updateLeadColdCall(lead.leadId, lead.leadCollectionsId, option);
-      if (updated) {
-         toast.success("Update Lead Cold Call Status");
-      } else {
-         toast.error("Failed to Update Lead Cold Call Status");
-      }
-   }
-
-   const onToggleStarred = async (lead: Lead, starred: boolean) => {
-      const updated = await updateLeadStarred(lead.leadId, lead.leadCollectionsId, starred);
-      if (updated) {
-         toast.success(`Starred ${lead.name}`);
-      } else {
-         toast.error("Failed to star lead");
-      }
-   }
 
    const applyFilters = (leads: Lead[]): Lead[] => {
       if (!showSearch) return leads;
@@ -102,6 +70,25 @@ export default function LeadsTable ({ title, showFound, showSearch, leads, onCli
             if (!callState) return true;
             if (lead.called == callState) return true;
          }) // filter for lead call state
+   }
+
+   function openLeadView() {
+      toast(leadViewCurrentIndex)
+      // return
+      showModal({
+         content: <LeadCardView 
+            index={leadViewCurrentIndex}
+            lead={leads[leadViewCurrentIndex]}
+            previousLead={() => setLeadViewCurrentIndex(prev => ((prev > 0) ? prev-1 : 0))}
+            nextLead={() => setLeadViewCurrentIndex(prev => ((prev == leads.length-1) ? leads.length-1 : prev+1))}
+            updateLeadStar={starred => 
+               setLeads(prev => ([
+                     ...prev.filter(l => l.leadId !== leads[leadViewCurrentIndex].leadId),
+                     { ...leads[leadViewCurrentIndex], starred }
+               ]))
+            }
+         />
+      })
    }
 
    return (
@@ -158,78 +145,50 @@ export default function LeadsTable ({ title, showFound, showSearch, leads, onCli
             <table className="leads-table">
                <thead>
                   <tr id='head-row'>
-                     <th style={{textAlign:"center"}}>#</th>
-                     <th>Name</th>
-                     <th>Phone Number</th>
-                     <th>Website</th>
+                     <th style={{ width: "80%" }}>Name</th>
                      <th>Actions</th>
-                     {/* <th>Address</th>
-                     <th style={{textAlign:"center"}}>Phone Number</th>
-                     <th style={{textAlign:"center"}}>Website</th>
-                     {(showStarred) && (<th style={{textAlign:"center"}}>Starred</th>)} */}
-                     {/* {(showCalled) && (<th style={{textAlign:"center"}}>Called</th>)} */}
                   </tr>
                </thead>
                <tbody>
                   {applyFilters(leads).map((lead, index) => (
                      <tr key={index}>
                         <td 
-                           style={{textAlign:"center"}}
-                           onClick={() => { if (onClickLead) onClickLead(lead); }}
+                           className='name' 
+                           onClick={() => {
+                              setLeadViewCurrentIndex(index);
+                              openLeadView();
+                           }}
                         >
-                           <div className="box full dfb align-center justify-center">
-                              <BusinessIcon url={lead.website!} size={25} round />
-                           </div>
-                        </td>
-                        <td 
-                           className='name'
-                           onClick={() => { if (onClickLead) onClickLead(lead); }}
-                        >{lead?.name!}</td>
-                        <td>{lead.phoneNumber}</td>
-                        <td>{lead.website}</td>
-                        <td>
-                           <div className="box full dfb align-center gap-10 wrap">
-                              <Link href={`https://google.com/search?q=${lead.name} ${lead.address}`} target='_blank'>
-                                 <button className="xxxxs pd-1 pdx-15 border-radius-15"><Search size={14} /> Search</button>
-                              </Link>
-                              <Link href={`tel:${lead.phoneNumber}`} target='_blank'>
-                                 <button className="xxxxs pd-1 pdx-15 border-radius-15"><Phone size={14} /> Call</button>
-                              </Link>
-                           </div>
-                        </td>
-                        {/* <td 
-                           onClick={() => { if (lead.address) copyToClipboard(lead?.address); }}
-                        >
-                           <span className="text-xxt">{lead?.address!}</span>
-                        </td>
-                        <td 
-                           style={{textAlign:"center"}} 
-                           onClick={() => { if (lead.address) copyToClipboard(lead?.address); }}
-                        >
-                           <span className="text-xxt">{lead?.phoneNumber}</span>
-                        </td>
-                        <td style={{textAlign:"center"}}>
-                           {lead.website ? (<>
-                              <div className="link-display">
-                                 <span className="text-xxt">{websiteFormatting(lead?.website)}</span>
+                           <div className="box full dfb align-center gap-10">
+                              <div className="box fit dfb align-center justify-center">
+                                 <BusinessIcon url={lead.website!} size={30} round />
                               </div>
-                           </>) : (<>
-                              <div className="text-xxt grey-4">No Website</div>
-                           </>)}
-                        </td>
-                        {(showStarred) && (<td style={{textAlign:"center"}}>
-                           <StarToggler starred={lead.starred} onToggleStarred={starred => onToggleStarred(lead, starred)} />
-                        </td>)}
-                        {showCalled && (<td style={{textAlign:"center"}}>
-                           <div className="box full dfb align-center justify-center">
-                              <Select
-                                 options={coldCallOptions}
-                                 onSelect={(option) => onSelectColdCallOption(lead, option)}
-                                 selectedOptionStyle={{ fontSize: "0.8rem" }}
-                                 defaultOptionIndex={coldCallOptions.indexOf(lead.called)}
-                              />
+                              <div className="box full dfb column">
+                                 <div className="text-xxs bold-600 full" style={{ whiteSpace: "break-spaces" }}>{lead?.name!}</div>
+                              </div>
                            </div>
-                        </td>)} */}
+                        </td>
+                        <td>
+                           <div className="box fit dfb column">
+                              <MultiActionDropdown
+                                 className='xxxs pd-1 pdx-15 outline-black tiny-shadow'
+                                 actions={[
+                                    { 
+                                       appearance: "normal", 
+                                       label: <><Search size={14} /> Search</>, 
+                                       action: () => window.open(`https://google.com/search?q=${encodeURIComponent(`${lead.name} ${lead.address}`)}`, "_blank")
+                                    },
+                                    { 
+                                       appearance: "normal", 
+                                       label: <><Phone size={14} /> Call</>, 
+                                       action: () => window.open(`tel:${lead.phoneNumber}`, "_blank")
+                                    }
+                                 ]}
+                              >
+                                 Actions <ChevronDown size={17} />
+                              </MultiActionDropdown>
+                           </div>
+                        </td>
                      </tr>
                   ))}
                </tbody>

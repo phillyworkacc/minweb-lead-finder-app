@@ -2,9 +2,12 @@
 import "./MultiActionDropdown.css"
 import { AnimatePresence, motion } from "framer-motion";
 import { MoreHorizontal } from "lucide-react"
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { CSSProperties, ReactNode, useEffect, useRef, useState } from "react";
 
 type MultiActionDropdownProps = {
+   children?: ReactNode;
+   className?: string;
+   styles?: CSSProperties;
    actions: {
       action: Function;
       label: ReactNode | string;
@@ -12,7 +15,7 @@ type MultiActionDropdownProps = {
    }[];
 }
 
-export default function MultiActionDropdown ({ actions }: MultiActionDropdownProps) {
+export default function MultiActionDropdown ({ actions, children, className, styles }: MultiActionDropdownProps) {
    const [showDropdown, setShowDropdown] = useState(false);
    const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -30,8 +33,8 @@ export default function MultiActionDropdown ({ actions }: MultiActionDropdownPro
 
    return (<>
       <div className="multi-action-dropdown">
-         <button className="fit multi-action-btn" onClick={() => setShowDropdown(p => !p)}>
-            <MoreHorizontal size={16} />
+         <button className={`fit multi-action-btn ${className}`} style={styles} onClick={() => setShowDropdown(p => !p)}>
+            {children || <MoreHorizontal size={16} />}
          </button>
          <AnimatePresence>
             {showDropdown && (<motion.div
