@@ -1,7 +1,7 @@
 import { dalDbOperation } from '@/dal/helpers'
 import { db } from '@/db'
-import { leadCollectionsTable } from '@/db/schemas'
-import { desc } from 'drizzle-orm'
+import { leadCollectionsTable, leadsTable } from '@/db/schemas'
+import { desc, eq } from 'drizzle-orm'
 import LeadsPage from './Leads'
 import LoadingLeadsPage from './loading'
 
@@ -11,7 +11,12 @@ export default async function Leads () {
          .select({
             leadCollectionsId: leadCollectionsTable.leadCollectionsId,
             name: leadCollectionsTable.name,
+            folders: leadCollectionsTable.folders,     
             date: leadCollectionsTable.date,
+            leadCount: db.$count(
+               leadsTable,
+               eq(leadsTable.leadCollectionsId, leadCollectionsTable.leadCollectionsId)
+            )
          })
          .from(leadCollectionsTable)
          .orderBy(desc(leadCollectionsTable.date));

@@ -3,6 +3,7 @@ type LeadCollection = {
    leadCollectionsId: string;
    name: string;
    date: string;
+   folders: string;
 }
 
 type Lead = {

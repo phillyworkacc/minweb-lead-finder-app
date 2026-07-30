@@ -5,8 +5,10 @@ import { useState } from "react";
 import { createFolder } from "@/app/actions/utils";
 import { toast } from "sonner";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
+import { useRouter } from "next/navigation";
 
 export default function CreateFolder() {
+   const router = useRouter();
    const { close } = useModal();
    const [name, setName] = useState("");
 
@@ -19,6 +21,7 @@ export default function CreateFolder() {
       const createdFolder = await createFolder(name);
       if (createdFolder) {
          toast.success(`${name} folder has been created!`);
+         router.refresh();
          close();
       } else {
          toast.error("Failed to create a folder");

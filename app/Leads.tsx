@@ -1,8 +1,9 @@
 "use client"
 import { ChevronDown, FolderPlus, Plus, UserRound, UserRoundSearch } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useModal } from '@/components/Modal/ModalContext';
+import { getFolders } from './actions/utils';
 import AppWrapper from '@/components/AppContainer/AppContainer';
 import Spacing from '@/components/Spacing/Spacing';
 import Select from '@/components/Select/Select';
@@ -12,14 +13,24 @@ import CreateFolder from '@/modals/CreateFolder';
 import MultiActionDropdown from '@/components/MultiActionDropdown/MultiActionDropdown';
 import FindLeads from '@/modals/FindLeads';
 
+type ExpandedLeadCollection = LeadCollection & { leadCount: number };
 type LeadsPageProps = {
-   leadsCollections: LeadCollection[];
+   leadsCollections: ExpandedLeadCollection[];
 }
 
-export default function LeadsPage ({ leadsCollections }: LeadsPageProps) {
+export default function LeadsPage ({ leadsCollections: rawLeadLists }: LeadsPageProps) {
    const router = useRouter();
    const { showModal } = useModal();
    const [searchQuery, setSearchQuery] = useState("");
+   const [leadsCollections, setLeadsCollections] = useState(rawLeadLists);
+   const [folders, setFolders] = useState<string[]>(["All"]);
+
+   async function getAllFolders () {
+      const allFolders: any[] = await getFolders();
+      setFolders(p => ([ "All", ...allFolders.map(f => f.name) ]));
+   }
+
+   useEffect(() => { getAllFolders() }, [])
 
    function openCreateLeadList () {
       showModal({ content: <CreateList /> })
@@ -44,8 +55,13 @@ export default function LeadsPage ({ leadsCollections }: LeadsPageProps) {
             <Select
                style={{ padding: "3px 10px", width: "100%", maxWidth: "200px" }}
                selectedOptionStyle={{ textAlign: "left", width: "100%" }}
-               options={[ "All", "Roofers" ]}
-               onSelect={() => {}}
+               options={folders}
+               onSelect={(folder) => {
+                  const selectedFolderName = folder.toLowerCase().replaceAll(" ", "-");
+                  setLeadsCollections(prev => ([
+                     ...rawLeadLists.filter(leadList => leadList.folders.split(",").includes(selectedFolderName))
+                  ]))
+               }}
             />
             <input 
                type="text"

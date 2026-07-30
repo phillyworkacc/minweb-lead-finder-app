@@ -11,7 +11,7 @@ export async function createLeadCollection (name: string, folderName: string) {
       const leadCollectionsId = uuid();
       const leadCollectionsName = titleCase(name);
       const now = Date.now().toString();
-      const folders = ["all", folderName].join(",");
+      const folders = ["all", folderName].filter(f => f !== "").join(",");
    
       const inserted = await dalDbOperation(async () => {
          const res = await db.insert(leadCollectionsTable)

@@ -54,3 +54,10 @@
 
 .leads-table .table-nowrap { white-space: nowrap; }
 .leads-table .table-description { max-width: 650px; }
+
+.folder-tag {
+   background-color: var(--accent-color);
+   color: white !important;
+   border-radius: 20px;
+   width: fit-content;
+}

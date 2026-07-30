@@ -7,8 +7,10 @@ import { toast } from "sonner";
 import { createLeadCollection } from "@/app/actions/leads";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
 import Select from "@/components/Select/Select";
+import { useRouter } from "next/navigation";
 
 export default function CreateList() {
+   const router = useRouter();
    const noneFolder: Folder = { id: "", name: "None", folderId: "none" };
    const { close } = useModal();
    const [name, setName] = useState("");
@@ -28,14 +30,10 @@ export default function CreateList() {
          callback();
          return;
       }
-      if (selectedFolder == "") {
-         toast.error("Please select a folder");
-         callback();
-         return;
-      }
       const createdLeadList = await createLeadCollection(name, selectedFolder);
       if (createdLeadList) {
          toast.success(`${name} list has been created!`);
+         router.refresh();
          close();
       } else {
          toast.error("Failed to create this lead list");
