@@ -64,6 +64,14 @@ export const automatedLeadsTable = pgTable("automated_leads", {
    outreachPrompt: text("outreach_prompt"),
 });
 
+export const leadAutomationQueueTable = pgTable("lead_automation_queue", {
+   id: serial("id").primaryKey(),
+   niche: text("niche"),
+   location: text("location"),
+   createdAt: text("created_at"),
+   completedAt: text("completed_at")
+});
+
 export const pushNotificationsTable = pgTable("push_notifications", {
    id: serial("id").primaryKey(),
    clientId: text("client_id"),
