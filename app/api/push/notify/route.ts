@@ -1,5 +1,5 @@
 import { notifyClientAboutLeads } from "@/app/actions/notifications";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const getCORSHeaders = () => {
    const headers = new Headers();
@@ -16,9 +16,10 @@ export async function OPTIONS() {
    });
 }
 
-export async function POST() {
+export async function POST(req: NextRequest) {
    try {
-      await notifyClientAboutLeads();
+      const notificationInfo = await req.json();
+      await notifyClientAboutLeads(notificationInfo);
       return Response.json({ success: true }, { status: 200, headers: getCORSHeaders() });
    } catch (err) {
       return Response.json({ success: false }, { status: 500, headers: getCORSHeaders() });

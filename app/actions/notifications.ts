@@ -17,7 +17,7 @@ export async function getSubscriptionsForClient (clientId: string) {
    }
 }
 
-export async function notifyClientAboutLeads () {
+export async function notifyClientAboutLeads (notificationInfo: any) {
    try {
       const { clientId } = currentUser();
       const userSubscriptions: any[] = await getSubscriptionsForClient(clientId);
@@ -26,8 +26,10 @@ export async function notifyClientAboutLeads () {
          await webpush.sendNotification(
             userSubscription.subscription as any,
             JSON.stringify({
-               title: "🎯 Lead Pipeline Complete",
-               body: "✅ 90 Leads Validated \n⭐ 55 Priority Leads \n🌐 30 Websites Audited \n📧 20 Emails Found \n\nTap to review your best opportunities.",
+               title: `🎯 ${notificationInfo.title}`,
+               body: `
+                  ✅ ${notificationInfo.data.validatedLeads} Leads Validated \n⭐ ${notificationInfo.data.priorityLeads} Priority Leads \n🌐 ${notificationInfo.data.websitesAudited} Websites Audited \n📧 ${notificationInfo.data.emailsFound} Emails Found \n\nTap to review your best opportunities.
+               `.trim(),
                url: `/automated-leads`,
             })
          );
