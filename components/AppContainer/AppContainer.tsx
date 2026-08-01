@@ -3,7 +3,7 @@ import "./AppContainer.css"
 import { ReactNode } from "react"
 import { MinwebLeadFinderLogo } from "../Icons/Icon";
 import { useRouter } from "next/navigation";
-import { ChevronRight, House, LayoutTemplate, Menu, Star, UserRound } from "lucide-react";
+import { Bell, ChevronRight, House, LayoutTemplate, Menu, Star, UserRound } from "lucide-react";
 import { useModal } from "../Modal/ModalContext";
 
 type AppContainerProps = {
@@ -29,6 +29,11 @@ export default function AppContainer ({ children }: AppContainerProps) {
          name: "Website Audit Reports",
          icon: <LayoutTemplate size={17} />,
          href: "/website-audit-reports", color: "#da6f45"
+      },
+      {
+         name: "Notifications",
+         icon: <Bell size={17} />,
+         href: "/notifications", color: "#009945"
       },
    ];
 
