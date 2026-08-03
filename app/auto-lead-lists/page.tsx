@@ -1,26 +1,19 @@
 "use client"
-import { ChevronDown, FolderPlus, Plus, ScrollText, UserRoundSearch } from 'lucide-react';
+import { ChevronDown, ScrollText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useModal } from '@/components/Modal/ModalContext';
-import { getFolders } from '@/app/actions/utils';
+import { getAllAutomatedLeadLists } from '../actions/lead-automation';
 import AppWrapper from '@/components/AppContainer/AppContainer';
 import Spacing from '@/components/Spacing/Spacing';
-import Select from '@/components/Select/Select';
 import LeadCollectionTable from '@/components/Table/LeadCollectionTable';
-import CreateList from '@/modals/CreateList';
-import CreateFolder from '@/modals/CreateFolder';
 import MultiActionDropdown from '@/components/MultiActionDropdown/MultiActionDropdown';
-import FindLeads from '@/modals/FindLeads';
-import { getAllLeadLists } from '@/app/actions/leads';
 import LoadingLeadsPage from '../loading';
-import { getAllAutomatedLeadLists } from '../actions/lead-automation';
+import AutoLeadListTable from '@/components/Table/AutoLeadListTable';
 
 type ExpandedAutomatedLeadList = AutomatedLeadList & { leadCount: number };
 
 export default function LeadsPage () {
    const router = useRouter();
-   const { showModal } = useModal();
    const [searchQuery, setSearchQuery] = useState("");
    const [autoLeadLists, setAutoLeadLists] = useState<ExpandedAutomatedLeadList[] | null>(null);
 
@@ -61,9 +54,9 @@ export default function LeadsPage () {
             </div>
          </div>
          <div className="box full dfb column gap-10">
-            <LeadCollectionTable
-               leadCollections={autoLeadLists.filter(lc => lc.name.toLowerCase().includes(searchQuery.toLowerCase()))}
-               onClickLeadCollection={autoLeadList => router.push(`/auto-lead-list/${autoLeadList.leadListId}`)}
+            <AutoLeadListTable
+               autoLeadLists={autoLeadLists.filter(lc => lc.name.toLowerCase().includes(searchQuery.toLowerCase()))}
+               onClickAutoLeadList={autoLeadList => router.push(`/auto-lead-list/${autoLeadList.leadListId}`)}
             />
          </div>
       </AppWrapper>

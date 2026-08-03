@@ -34,3 +34,12 @@
    border-top: 1px solid #dddddd;
    height: 1px;
 }
+
+.starred-tag-auto-lead-card {
+   width: fit-content;
+   background-color: #ffeac2;
+   color: #c27400;
+   border: 1px solid #c27400;
+   border-radius: 20px;
+   padding: 10px 15px;
+}

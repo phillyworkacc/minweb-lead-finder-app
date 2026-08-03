@@ -12,38 +12,46 @@ type WebsiteIntelligenceProps = {
 }
 
 export default function WebsiteIntelligence ({ websiteScrapedInfo, websiteAudit }: WebsiteIntelligenceProps) {
-   return (<>
-      <div className="text-sm full bold-700 mb-05">Website & Lead Insights</div>
-      <div className="text-s full bold-500 mb-15">{websiteScrapedInfo.title}</div>
-      <div className="box full dfb wrap gap-10">
-         <ScoreCard score={websiteAudit.websiteScore} />
-         <WebsiteSpeed speed={websiteAudit.speed} loadTimeMs={websiteScrapedInfo.loadingTime} />
-         <ImagesCaptured images={websiteScrapedInfo.images} />
-      </div>
+   if (websiteScrapedInfo.exists && websiteScrapedInfo.url) {
+      return (<>
+         <div className="text-sm full bold-700 mb-05">Website & Lead Insights</div>
+         <div className="text-s full bold-500 mb-15">{websiteScrapedInfo.title}</div>
+         <div className="box full dfb wrap gap-10">
+            <ScoreCard score={websiteAudit.websiteScore} />
+            <WebsiteSpeed speed={websiteAudit.speed} loadTimeMs={websiteScrapedInfo.loadingTime} />
+            <ImagesCaptured images={websiteScrapedInfo.images} />
+         </div>
 
-      <Spacing size={2} />
-      <div className="text-xs full bold-700 mb-1">Signals</div>
-      <Signals audit={websiteAudit} />
+         <Spacing size={2} />
+         <div className="text-xs full bold-700 mb-1">Signals</div>
+         <Signals audit={websiteAudit} />
 
-      <Spacing size={2} />
-      <div className="text-xs full bold-700 mb-1">Web Search Result</div>
-      <SearchResultOverview websiteScrapedInfo={websiteScrapedInfo} />
+         <Spacing size={2} />
+         <div className="text-xs full bold-700 mb-1">Web Search Result</div>
+         <SearchResultOverview websiteScrapedInfo={websiteScrapedInfo} />
 
-      <Spacing size={2} />
-      <div className="text-xs full bold-700 mb-1">Social Media Presence</div>
-      <SocialMediaPresence websiteScrapedInfo={websiteScrapedInfo} audit={websiteAudit} />
+         <Spacing size={2} />
+         <div className="text-xs full bold-700 mb-1">Social Media Presence</div>
+         <SocialMediaPresence websiteScrapedInfo={websiteScrapedInfo} audit={websiteAudit} />
 
-      <Spacing size={2} />
-      <div className="text-xs full bold-700 mb-1">Call To Actions</div>
-      <CallToActions websiteScrapedInfo={websiteScrapedInfo} />
+         <Spacing size={2} />
+         <div className="text-xs full bold-700 mb-1">Call To Actions</div>
+         <CallToActions websiteScrapedInfo={websiteScrapedInfo} />
 
-      <Spacing size={2} />
-      <div className="text-xs full bold-700 mb-1">Contact Information</div>
-      <ContactInfos websiteScrapedInfo={websiteScrapedInfo} />
+         <Spacing size={2} />
+         <div className="text-xs full bold-700 mb-1">Contact Information</div>
+         <ContactInfos websiteScrapedInfo={websiteScrapedInfo} />
 
-      <Spacing size={2} />
-      <StrengthsAndWeaknesses audit={websiteAudit} />
-   </>)
+         <Spacing size={2} />
+         <StrengthsAndWeaknesses audit={websiteAudit} />
+      </>)
+   } else {
+      return (<>
+         <div className="text-sm full bold-700 mb-05">Website & Lead Insights</div>
+         <div className="text-s full bold-500 mb-15">{websiteScrapedInfo.title}</div>
+         <div className="text-xxs grey-5 full">No Website</div>
+      </>)
+   }
 }
 
 function ScoreCard ({ score }: { score: number }) {
@@ -164,18 +172,21 @@ function SocialMediaPresence ({ websiteScrapedInfo, audit }: { audit: ProperWebs
 
    return (<div className="box full dfb wrap gap-10">
       {socialPlatforms.map(sp => (websiteScrapedInfo as any).socialLinks[sp.key]).filter(l => l !== "").length > 0 ? (<>
-         {socialPlatforms.map((socialPlatform, index) => {
+         {socialPlatforms
+            .filter(s => (
+               (audit as any).socialPresence[s.key] && (websiteScrapedInfo as any).socialLinks[s.key]
+            ))
+            .map((socialPlatform, index) => {
             const { background, color } = socialPlatform;
-            const active = (audit as any).socialPresence[socialPlatform.key];
             const href = (websiteScrapedInfo as any).socialLinks[socialPlatform.key];
-            return (active && href) ? (<>
+            return (
                <Link key={index} className="box fit social-media-link-display" href={href} target="_blank" style={{ background, color }}>
                   <div className="box full dfb align-center gap-10">
                      <div className="box fit h-full dfb align-center"><socialPlatform.Icon size={15} /></div>
                      <div className="text-t full">{socialPlatform.label}</div>
                   </div>
                </Link>
-            </>) : (<></>)
+            )
          })}
       </>) : (<>
          <div className="text-xxxs grey-5 full">No Social Media Presence</div>

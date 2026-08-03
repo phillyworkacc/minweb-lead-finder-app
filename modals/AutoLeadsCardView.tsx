@@ -1,14 +1,17 @@
 "use client"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BusinessIcon } from "@/components/Icons/Icon";
-import { Calendar, ChevronLeft, ChevronRight, Globe, Mail, MapPin, Phone, Search, SquareArrowOutUpRight } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Globe, Mail, MapPin, Phone, Search, SquareArrowOutUpRight, Star } from "lucide-react";
 import { leadCardItemEllipsis, websiteFormatting } from "@/machine/helpers";
 import { formatMilliseconds } from "@/utils/date";
+import { updateAutomatedLeadStarred } from "@/app/actions/lead-automation";
+import { toast } from "sonner";
 import Link from "next/link";
 import Spacing from "@/components/Spacing/Spacing";
 import WebsiteIntelligence from "@/components/AutomatedLeadInsights/WebsiteIntelligence";
 import SalesPriority from "@/components/AutomatedLeadInsights/SalesPriority";
 import RecommendedOffers from "@/components/AutomatedLeadInsights/RecommendedOffers";
+import AwaitButton from "@/components/AwaitButton/AwaitButton";
 
 type AutoLeadsCardViewProps = {
    automatedLeads: AutomatedLead[];
@@ -19,6 +22,10 @@ export default function AutoLeadsCardView ({ automatedLeads, currentLeadIndex }:
    const [allAutoLeads, setAllAutoLeads] = useState<AutomatedLead[]>(automatedLeads);
    const [viewingIndex, setViewingIndex] = useState<number>(currentLeadIndex);
 
+   useEffect(() => {
+      console.log(allAutoLeads[viewingIndex])
+   }, [viewingIndex])
+
    function gotoPreviousLead () {
       if (viewingIndex === 0) return;
       setViewingIndex(i => i-1);
@@ -27,6 +34,23 @@ export default function AutoLeadsCardView ({ automatedLeads, currentLeadIndex }:
    function gotoNextLead () {
       if (viewingIndex === (allAutoLeads.length-1)) return;
       setViewingIndex(i => i+1);
+   }
+
+   async function toggleStarredLead (callback: Function) {
+      const autoLead = allAutoLeads[viewingIndex];
+      const newStarredValue = autoLead.starred ? false : true;
+      const starredAutoLead = await updateAutomatedLeadStarred(autoLead.leadId, autoLead.leadListId, newStarredValue);
+      if (starredAutoLead) {
+         setAllAutoLeads(p => {
+            const copiedP = [ ...p ];
+            copiedP[viewingIndex].starred = newStarredValue;
+            return ([ ...copiedP ]);
+         });
+         toast.success(`${newStarredValue ? "Starred" : "Un-starred"} ${autoLead.name}`)
+      } else {
+         toast.error("Failed to star this lead");
+      }
+      callback();
    }
 
    return (
@@ -75,6 +99,14 @@ export default function AutoLeadsCardView ({ automatedLeads, currentLeadIndex }:
             </div>
          </div>
 
+         {(allAutoLeads[viewingIndex].starred) ? (<>
+            <div className="starred-tag-auto-lead-card">
+               <div className="text-xxxs fit dfb align-center gap-5 bold-600">
+                  <Star size={18} fill="#c27400" /> Starred Lead
+               </div>
+            </div>
+         </>) : (<></>)}
+
          {(allAutoLeads[viewingIndex].phoneNumber) ? (
             <div className="box full dfb wrap gap-5" style={{ maxWidth: "350px" }}>
                <Link href={`https://google.com/search?q=${encodeURIComponent(`${allAutoLeads[viewingIndex].name} ${allAutoLeads[viewingIndex].address}`)}`} target="_blank">
@@ -83,6 +115,10 @@ export default function AutoLeadsCardView ({ automatedLeads, currentLeadIndex }:
                <Link href={`mailto:${leadCardItemEllipsis(allAutoLeads[viewingIndex].email)}`} target="_blank">
                   <button className="xxxs pd-15 full pdx-15 border-radius-15 whitespace-nowrap mw-500"><Phone size={14} /> {allAutoLeads[viewingIndex].phoneNumber}</button>
                </Link>
+               <AwaitButton 
+                  className="xxxs pd-15 outline-black tiny-shadow fit pdx-15 border-radius-15 whitespace-nowrap mw-500"
+                  onClick={toggleStarredLead} blackSpinner
+               ><Star size={14} color="#ffa010" fill="#ffa010" /> {allAutoLeads[viewingIndex].starred ? 'Un-star' : 'Star'} Lead</AwaitButton>
             </div>
          ) : <></>}
          <Spacing size={2} />

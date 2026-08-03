@@ -21,7 +21,7 @@ export function MassiveModal ({ children, close }: Required<ModalProps>) {
       <div className="massive-modal">
          <div className='massive-modal-box'>
             <div className="close" onClick={close}><X size={16} strokeWidth={3} /></div>
-            {children}
+            <div className="massive-modal-container">{children}</div>
          </div>
       </div>
    )

@@ -2,7 +2,7 @@
 import { dalDbOperation } from "@/dal/helpers";
 import { db } from "@/db";
 import { automatedLeadListTable, automatedLeadsTable, leadAutomationQueueTable } from "@/db/schemas";
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 
 
 export async function getAllAutomatedLeadLists (): Promise<AutomatedLeadList[]> {
@@ -48,7 +48,27 @@ export async function addNewLeadAutomationQueue (niche: string) {
          return (res.rowCount > 0);
       })
 
-      return inserted.success;
+      return inserted.success ? inserted.data : false;
+   } catch (e) {
+      return false;
+   }
+}
+
+export async function updateAutomatedLeadStarred (leadId: string, leadListId: string, starred: boolean) {
+   try {
+      const updated = await dalDbOperation(async () => {
+         const res = await db
+            .update(automatedLeadsTable)
+            .set({ starred })
+            .where(and(
+               eq(automatedLeadsTable.leadListId, leadListId),
+               eq(automatedLeadsTable.leadId, leadId)
+            ));
+
+         return (res.rowCount === 1);
+      })
+   
+      return updated.success ? updated.data : false;
    } catch (e) {
       return false;
    }
@@ -63,10 +83,10 @@ export async function deleteAutomatedLeadList (leadListId: string) {
          const res2 = await db.delete(automatedLeadsTable)
             .where(eq(automatedLeadsTable.leadListId, leadListId));
 
-         return (res.rowCount === 1 && res2.rowCount >= 1);
+         return (res.rowCount === 1 && res2.rowCount >= 0);
       })
    
-      return deleted.success;
+      return deleted.success ? deleted.data : false;
    } catch (e) {
       return false;
    }
@@ -96,7 +116,7 @@ export async function updateLeadQueueItemPriority (leadQueueItemId: number, newP
          return res.rowCount === 1;
       })
 
-      return updated.success;
+      return updated.success ? updated.data : false;
    } catch (e) {
       return false;
    }

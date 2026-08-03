@@ -75,12 +75,14 @@ function BestMatch ({ leadOffers }: { leadOffers: LeadOffers }) {
             </div>
             <div className="text-sm fit bold-500">{bestOffer.score}</div>
          </div>
-         <div className="box full pd-05">
-            <div className="dashed-divider-line" />
-         </div>
-         <div className="text-t full bold-500">
-            +{bestOffer.score-runnerUp.score} pts ahead of {runnerUp.offer}
-         </div>
+         {runnerUp ? (<>
+            <div className="box full pd-05">
+               <div className="dashed-divider-line" />
+            </div>
+            <div className="text-t full bold-500">
+               +{bestOffer.score-runnerUp.score} pts ahead of {runnerUp.offer}
+            </div>
+         </>) : (<></>)}
       </div>)
    }
 }

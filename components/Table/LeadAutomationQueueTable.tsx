@@ -5,18 +5,48 @@ import { useModal } from '../Modal/ModalContext';
 import { formatMilliseconds } from '@/utils/date';
 import { getAllLeadAutomations } from '@/app/actions/lead-automation';
 import LAQueueItem from '@/modals/LAQueueItem';
+import Checkbox from '../Checkbox/Checkbox';
+
+interface Filters extends Record<string, null | boolean> {
+   isCompleted: null | boolean;
+   isNotCompleted: null | boolean;
+   hasPriority: null | boolean;
+   hasNoPriority: null | boolean;
+}
 
 export default function LeadAutomationQueueTable () {
    const { showModal } = useModal();
    const [leadAutomationQueue, setLeadAutomationQueue] = useState<LeadQueueItem[]>([]);
    const [searchLeadQueue, setSearchLeadQueue] = useState('');
+   const [filters, setFilters] = useState<Filters>({
+      isCompleted: null,
+      isNotCompleted: null,
+      hasPriority: null,
+      hasNoPriority: null,
+   });
 
-   const applyFilters = (leads: LeadQueueItem[]): LeadQueueItem[] => {
-      return leads
-         .filter(lead => 
-            lead.niche.toLowerCase().includes(searchLeadQueue.toLowerCase())
-            || lead.location.toLowerCase().includes(searchLeadQueue.toLowerCase())
+   const applyFilters = (leadQueue: LeadQueueItem[]): LeadQueueItem[] => {
+      return leadQueue
+         .filter(leadQueueItem => 
+            leadQueueItem.niche.toLowerCase().includes(searchLeadQueue.toLowerCase())
+            || leadQueueItem.location.toLowerCase().includes(searchLeadQueue.toLowerCase())
          ) // search filter
+         .filter(leadQueueItem => {
+            if (!filters.hasPriority) return true;
+            return (leadQueueItem.priority == "ahead")
+         }) // filter for has priority
+         .filter(leadQueueItem => {
+            if (!filters.hasNoPriority) return true;
+            return (leadQueueItem.priority == "none")
+         }) // filter for has no priority
+         .filter(leadQueueItem => {
+            if (!filters.isCompleted) return true;
+            return (leadQueueItem.completedAt !== null && leadQueueItem.completedAt !== "" && leadQueueItem.completedAt)
+         }) // filter for is completed
+         .filter(leadQueueItem => {
+            if (!filters.isNotCompleted) return true;
+            return (leadQueueItem.completedAt == null || leadQueueItem.completedAt == "" || !leadQueueItem.completedAt)
+         }) // filter for is not completed
    }
 
    async function loadAutomationQueue () {
@@ -49,6 +79,7 @@ export default function LeadAutomationQueueTable () {
    return (
       <>
          <div className="box full mb-2">
+            <div className="text-xxxs full grey-4 mb-05 pdx-05 pd-1">{leadAutomationQueue.length} lead queue(s) items found</div>
             <div className='box full dfb column'>
                <div className="box full pd-05">
                   <input
@@ -60,9 +91,30 @@ export default function LeadAutomationQueueTable () {
                      onChange={e => setSearchLeadQueue(e.target.value)}
                   />
                </div>
+               <div className="box full dfb wrap align-center gap-15 pd-05 mb-15">
+                  <Checkbox 
+                     label='Is Completed'
+                     onChange={t => setFilters(p => ({ ...p, isCompleted: t || null }))}
+                  />
+                  <Checkbox 
+                     label='Is Not Completed'
+                     onChange={t => setFilters(p => ({ ...p, isNotCompleted: t || null }))}
+                  />
+                  <Checkbox 
+                     label='Has Priority'
+                     onChange={t => setFilters(p => ({ ...p, hasPriority: t || null }))}
+                  />
+                  <Checkbox 
+                     label='Has No Priority'
+                     onChange={t => setFilters(p => ({ ...p, hasNoPriority: t || null }))}
+                  />
+               </div>
             </div>
-            {( searchLeadQueue !== '' ) && (<div className="box full">
-               <div className="text-xxxs full grey-4 mb-05 pdx-05 pd-1">After filters, {applyFilters(leadAutomationQueue).length} lead queue(s) found</div>
+            {( 
+               searchLeadQueue !== '' ||
+               Object.keys(filters).map((k) => filters[k]).includes(true)
+            ) && (<div className="box full">
+               <div className="text-xxxs full grey-4 mb-05 pdx-05 pd-1">After filters, {applyFilters(leadAutomationQueue).length} lead queue(s) items found</div>
             </div>)}
          </div>
          <div className="table-container">
