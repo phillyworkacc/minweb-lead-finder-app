@@ -22,7 +22,7 @@ export default function LeadsPage () {
    const router = useRouter();
    const { showModal } = useModal();
    const [searchQuery, setSearchQuery] = useState("");
-   const [autoLeadLists, setAutoLeadLists] = useState<ExpandedAutomatedLeadList[]>([]);
+   const [autoLeadLists, setAutoLeadLists] = useState<ExpandedAutomatedLeadList[] | null>(null);
 
    async function loadAll () {
       const allAutoLeadLists: any[] = await getAllAutomatedLeadLists();
@@ -31,7 +31,7 @@ export default function LeadsPage () {
 
    useEffect(() => { loadAll() }, [])
 
-   if (autoLeadLists.length < 1) return <LoadingLeadsPage />
+   if (autoLeadLists == null) return <LoadingLeadsPage />
 
    return (
       <AppWrapper>
