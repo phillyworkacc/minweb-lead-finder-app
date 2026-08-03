@@ -68,6 +68,7 @@ export const leadAutomationQueueTable = pgTable("lead_automation_queue", {
    id: serial("id").primaryKey(),
    niche: text("niche"),
    location: text("location"),
+   priority: text("priority"),
    createdAt: text("created_at"),
    completedAt: text("completed_at")
 });

@@ -1,0 +1,33 @@
+.multi-bar-selection {
+   width: 100%;
+   border-radius: 12px;
+   border: 1px solid #dedede;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.085);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: white;
+   gap: 5px;
+   padding: 3px;
+}
+
+.multi-bar-selection > .bar-selection {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: white;
+   color: black;
+   cursor: pointer;
+   border-radius: 12px;
+   padding: 5px 0;
+}
+
+.multi-bar-selection > .bar-selection:not(.selected):hover {
+   background-color: #ff607573;
+}
+
+.multi-bar-selection > .bar-selection.selected {
+   background-color: var(--accent-color);
+   color: white;
+}

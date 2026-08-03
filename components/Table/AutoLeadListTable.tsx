@@ -5,26 +5,26 @@ import { formatMilliseconds } from '@/utils/date';
 import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useModal } from '../Modal/ModalContext';
-import DeleteLeadList from '@/modals/DeleteLeadList';
+import DeleteAutoLeadList from '@/modals/DeleteAutoLeadList';
 
-type LeadCollectionsTableProps = {
-   leadCollections: any[];
-   onClickLeadCollection?: (leadCollection: any) => void;
+type AutoLeadListTableProps = {
+   autoLeadLists: any[];
+   onClickAutoLeadList?: (autoLeadList: any) => void;
 }
 
-export default function LeadCollectionTable ({ leadCollections: rawLeadLists, onClickLeadCollection }: LeadCollectionsTableProps) {
+export default function AutoLeadListTable ({ autoLeadLists: rawLeadLists, onClickAutoLeadList }: AutoLeadListTableProps) {
    const { showModal } = useModal();
    const [leadCollections, setLeadCollections] = useState(rawLeadLists);
    
-   const onDeleteLeadList = async (leadCollection: any) => {
+   const onDeleteLeadList = async (autoLeadList: any) => {
       showModal({ content: <>
-         <DeleteLeadList 
-            leadCollection={leadCollection} 
-            afterDeleteSuccess={(leadCollectionsId) => 
-               setLeadCollections(p => ([ ...p.filter(l => l.leadCollectionsId !== leadCollectionsId) ]))
+         <DeleteAutoLeadList 
+            autoLeadList={autoLeadList} 
+            afterDeleteSuccess={leadListId => 
+               setLeadCollections(p => ([ ...p.filter(l => l.leadListId !== leadListId) ]))
             } 
-         />
-      </>})
+         /></>
+      })
    }
 
    return (
@@ -40,7 +40,7 @@ export default function LeadCollectionTable ({ leadCollections: rawLeadLists, on
             <tbody>
                {leadCollections.map((leadCollection, index) => (
                   <tr key={index}>
-                     <td onClick={() => { if (onClickLeadCollection) onClickLeadCollection(leadCollection); }}>
+                     <td onClick={() => { if (onClickAutoLeadList) onClickAutoLeadList(leadCollection); }}>
                         <div className="box full dfb column gap-5">
                            <div className="text-xs full text-left bold-600">{leadCollection.name}</div>
                            <div className="text-xxxs full text-left grey-5">{formatMilliseconds(parseInt(leadCollection.date))}</div>
@@ -53,7 +53,7 @@ export default function LeadCollectionTable ({ leadCollections: rawLeadLists, on
                            </div>
                         </div>
                      </td>
-                     <td onClick={() => { if (onClickLeadCollection) onClickLeadCollection(leadCollection); }}>
+                     <td onClick={() => { if (onClickAutoLeadList) onClickAutoLeadList(leadCollection); }}>
                         {leadCollection.leadCount} lead(s)
                      </td>
                      <td>

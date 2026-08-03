@@ -4,7 +4,33 @@ import { leadCollectionsTable, leadsTable } from "@/db/schemas";
 import { uuid } from "@/utils/uuid"
 import { dalDbOperation } from "@/dal/helpers";
 import { titleCase } from "@/lib/str";
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
+
+export async function getAllLeadLists (): Promise<any[]> {
+   try {
+      const leadCollections = await dalDbOperation(async () => {
+         const res = await db
+            .select({
+               leadCollectionsId: leadCollectionsTable.leadCollectionsId,
+               name: leadCollectionsTable.name,
+               folders: leadCollectionsTable.folders,     
+               date: leadCollectionsTable.date,
+               leadCount: db.$count(
+                  leadsTable,
+                  eq(leadsTable.leadCollectionsId, leadCollectionsTable.leadCollectionsId)
+               )
+            })
+            .from(leadCollectionsTable)
+            .orderBy(desc(leadCollectionsTable.date));
+         
+         return res;
+      })
+
+      return leadCollections.success ? leadCollections.data : [];
+   } catch (e) {
+      return [];
+   }
+}
 
 export async function createLeadCollection (name: string, folderName: string) {
    try {

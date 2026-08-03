@@ -1,0 +1,24 @@
+.metric-wrapper {
+   width: 100%;
+   max-width: 170px;
+   border: 1px solid #dedede;
+   border-radius: 10px;
+   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.074);
+   display: flex;
+   gap: 5px;
+   flex-direction: column;
+   padding: 7px 10px;
+}
+
+.metric-wrapper > .metric-progress {
+   width: 100%;
+   height: 7px;
+   border-radius: 999px;
+   overflow: hidden;
+}
+
+.metric-wrapper > .metric-progress > .metric-progress-fill {
+   height: 100%;
+   border-radius: inherit;
+   transition: width 0.3s ease;
+}

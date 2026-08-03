@@ -95,3 +95,24 @@ export function GoogleIcon({ size }: IconProps) {
       </svg>
    )
 }
+
+export function TiktokIcon({ size, ...rest }: IconProps) {
+   function base(size: number | undefined) {
+      return {
+         width: size ?? 16,
+         height: size ?? 16,
+         viewBox: "0 0 24 24",
+         fill: "none",
+         stroke: "currentColor",
+         strokeWidth: 2,
+         strokeLinecap: "round" as const,
+         strokeLinejoin: "round" as const,
+      };
+   }
+   return (
+      <svg {...base(size)} {...rest}>
+         <path d="M14 4v10.5a2.5 2.5 0 1 1-2.5-2.5" />
+         <path d="M14 4a5 5 0 0 0 5 5" />
+      </svg>
+   );
+}

@@ -26,11 +26,32 @@ export async function notifyClientAboutLeads (notificationInfo: any) {
          await webpush.sendNotification(
             userSubscription.subscription as any,
             JSON.stringify({
-               title: `🎯 ${notificationInfo.title}`,
+               title: `${notificationInfo.title}`,
                body: `
                   ✅ ${notificationInfo.data.validatedLeads} Leads Validated \n⭐ ${notificationInfo.data.priorityLeads} Priority Leads \n🌐 ${notificationInfo.data.websitesAudited} Websites Audited \n📧 ${notificationInfo.data.emailsFound} Emails Found \n\nTap to review your best opportunities.
                `.trim(),
-               url: `/automated-leads`,
+               url: `/auto-lead-list/${notificationInfo.leadListId}`,
+            })
+         );
+      }
+      return true;
+   } catch (err) {
+      return false;
+   }
+}
+
+export async function notifyClientAboutError (notificationInfo: any) {
+   try {
+      const { clientId } = currentUser();
+      const userSubscriptions: any[] = await getSubscriptionsForClient(clientId);
+   
+      for (const userSubscription of userSubscriptions) {
+         await webpush.sendNotification(
+            userSubscription.subscription as any,
+            JSON.stringify({
+               title: `Error Occurred`,
+               body: `${notificationInfo.errorMessage}`.trim(),
+               url: `/auto-lead-lists`,
             })
          );
       }

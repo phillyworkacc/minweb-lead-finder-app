@@ -1,0 +1,180 @@
+:root {
+  /* Ink & neutrals */
+  --ins-ink: #12161f;
+  --ins-ink-soft: #3a4152;
+  --ins-slate: #667085;
+  --ins-slate-light: #eef0f3;
+  --ins-slate-ink: #475066;
+  --ins-line: #e4e7ec;
+  --ins-line-soft: #edeff2;
+  --ins-canvas: #ffffff;
+  --ins-mist: #f7f8fa;
+ 
+  /* Signature accent — "valuable / act on this" */
+  --ins-gold: #b7791f;
+  --ins-gold-light: #fbf1de;
+  --ins-gold-ink: #7c5211;
+ 
+  /* Status scale */
+  --ins-teal: #0f766e;
+  --ins-teal-light: #e3f5f2;
+  --ins-amber: #b54708;
+  --ins-amber-light: #fdf1e2;
+  --ins-rust: #b42318;
+  --ins-rust-light: #fbeae8;
+ 
+  /* Typography */
+  --ins-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --ins-font-mono: "SF Mono", "IBM Plex Mono", "JetBrains Mono", ui-monospace, Menlo,
+    Consolas, monospace;
+ 
+  /* Radii & elevation */
+  --ins-radius-sm: 6px;
+  --ins-radius-md: 12px;
+  --ins-radius-lg: 18px;
+  --ins-shadow-sm: 0 1px 2px rgba(18, 22, 31, 0.05);
+  --ins-shadow-md: 0 8px 24px rgba(18, 22, 31, 0.07);
+ 
+  /* Spacing scale */
+  --ins-space-1: 4px;
+  --ins-space-2: 8px;
+  --ins-space-3: 12px;
+  --ins-space-4: 16px;
+  --ins-space-5: 24px;
+  --ins-space-6: 32px;
+}
+
+.wrap {
+  margin: 0;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ins-space-2);
+}
+
+.dial {
+  position: relative;
+  width: 128px;
+  height: 128px;
+  transform: rotate(-4deg);
+}
+
+.wrap[data-size="md"] .dial {
+  width: 96px;
+  height: 96px;
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.track {
+  fill: none;
+  stroke: var(--ins-line);
+  stroke-width: 8;
+}
+
+.ticks {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-dasharray: 1 7;
+  opacity: 0.4;
+}
+
+.progress {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transform: rotate(4deg);
+  line-height: 1.1;
+}
+
+.primary {
+  font-family: var(--ins-font-mono);
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--ins-ink);
+  letter-spacing: -0.02em;
+}
+
+.wrap[data-size="md"] .primary {
+  font-size: 22px;
+}
+
+.secondary {
+  margin-top: 3px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ins-slate);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.caption {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ins-slate);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+/* Tone → color mapping, shared vocabulary across every panel */
+.dial[data-tone="teal"] {
+  color: var(--ins-teal);
+}
+.dial[data-tone="teal"] .progress {
+  stroke: var(--ins-teal);
+}
+
+.dial[data-tone="amber"] {
+  color: var(--ins-amber);
+}
+.dial[data-tone="amber"] .progress {
+  stroke: var(--ins-amber);
+}
+
+.dial[data-tone="rust"] {
+  color: var(--ins-rust);
+}
+.dial[data-tone="rust"] .progress {
+  stroke: var(--ins-rust);
+}
+
+.dial[data-tone="gold"] {
+  color: var(--ins-gold);
+}
+.dial[data-tone="gold"] .progress {
+  stroke: var(--ins-gold);
+}
+
+.dial[data-tone="slate"] {
+  color: var(--ins-slate);
+}
+.dial[data-tone="slate"] .progress {
+  stroke: var(--ins-slate);
+}
+
+@media print {
+  .dial {
+    transform: none;
+  }
+  .center {
+    transform: none;
+  }
+}

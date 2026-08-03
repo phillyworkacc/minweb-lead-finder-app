@@ -11,7 +11,7 @@ import Checkbox from '../Checkbox/Checkbox';
 import Link from 'next/link';
 import MultiActionDropdown from '../MultiActionDropdown/MultiActionDropdown';
 import { useModal } from '../Modal/ModalContext';
-import LeadCardView from '@/modals/LeadCardView';
+import LeadCardView from '@/modals/AutoLeadsCardView';
 
 type ClientsTableProps = {
    title?: string;
@@ -70,25 +70,6 @@ export default function LeadsTable ({ title, showFound, showSearch, leads: leads
             if (!callState) return true;
             if (lead.called == callState) return true;
          }) // filter for lead call state
-   }
-
-   function openLeadView() {
-      toast(leadViewCurrentIndex)
-      // return
-      showModal({
-         content: <LeadCardView 
-            index={leadViewCurrentIndex}
-            lead={leads[leadViewCurrentIndex]}
-            previousLead={() => setLeadViewCurrentIndex(prev => ((prev > 0) ? prev-1 : 0))}
-            nextLead={() => setLeadViewCurrentIndex(prev => ((prev == leads.length-1) ? leads.length-1 : prev+1))}
-            updateLeadStar={starred => 
-               setLeads(prev => ([
-                     ...prev.filter(l => l.leadId !== leads[leadViewCurrentIndex].leadId),
-                     { ...leads[leadViewCurrentIndex], starred }
-               ]))
-            }
-         />
-      })
    }
 
    return (
@@ -156,7 +137,6 @@ export default function LeadsTable ({ title, showFound, showSearch, leads: leads
                            className='name' 
                            onClick={() => {
                               setLeadViewCurrentIndex(index);
-                              openLeadView();
                            }}
                         >
                            <div className="box full dfb align-center gap-10">

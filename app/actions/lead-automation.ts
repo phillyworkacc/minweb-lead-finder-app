@@ -1,7 +1,34 @@
 "use server"
 import { dalDbOperation } from "@/dal/helpers";
 import { db } from "@/db";
-import { leadAutomationQueueTable } from "@/db/schemas";
+import { automatedLeadListTable, automatedLeadsTable, leadAutomationQueueTable } from "@/db/schemas";
+import { desc, eq } from "drizzle-orm";
+
+
+export async function getAllAutomatedLeadLists (): Promise<AutomatedLeadList[]> {
+   try {
+      const automatedLeadLists = await dalDbOperation(async () => {
+         const res = await db
+            .select({
+               leadListId: automatedLeadListTable.leadListId,
+               name: automatedLeadListTable.name,
+               folders: automatedLeadListTable.folders,
+               date: automatedLeadListTable.date,
+               leadCount: db.$count(
+                  automatedLeadsTable,
+                  eq(automatedLeadsTable.leadListId, automatedLeadListTable.leadListId)
+               )
+            })
+            .from(automatedLeadListTable)
+            .orderBy(desc(automatedLeadListTable.date));
+         
+         return res;
+      })
+      return automatedLeadLists.success ? automatedLeadLists.data as any[] : [];
+   } catch (e) {
+      return [];
+   }
+}
 
 export async function addNewLeadAutomationQueue (niche: string) {
    try {
@@ -26,3 +53,52 @@ export async function addNewLeadAutomationQueue (niche: string) {
       return false;
    }
 }
+
+export async function deleteAutomatedLeadList (leadListId: string) {
+   try {
+      const deleted = await dalDbOperation(async () => {
+         const res = await db.delete(automatedLeadListTable)
+            .where(eq(automatedLeadListTable.leadListId, leadListId));
+         
+         const res2 = await db.delete(automatedLeadsTable)
+            .where(eq(automatedLeadsTable.leadListId, leadListId));
+
+         return (res.rowCount === 1 && res2.rowCount >= 1);
+      })
+   
+      return deleted.success;
+   } catch (e) {
+      return false;
+   }
+}
+
+export async function getAllLeadAutomations (): Promise<any[] | false> {
+   try {
+      const queue = await dalDbOperation(async () => {
+         const res = await db.select()
+            .from(leadAutomationQueueTable)
+            .orderBy(desc(leadAutomationQueueTable.createdAt), desc(leadAutomationQueueTable.completedAt));
+         return res
+      })
+
+      return queue.success ? queue.data : false;
+   } catch (e) {
+      return false;
+   }
+}
+
+export async function updateLeadQueueItemPriority (leadQueueItemId: number, newPriority: string): Promise<boolean> {
+   try {
+      const updated = await dalDbOperation(async () => {
+         const res = await db.update(leadAutomationQueueTable)
+            .set({ priority: newPriority })
+            .where(eq(leadAutomationQueueTable.id, leadQueueItemId));
+         return res.rowCount === 1;
+      })
+
+      return updated.success;
+   } catch (e) {
+      return false;
+   }
+}
+

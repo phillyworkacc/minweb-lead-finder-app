@@ -1,16 +1,18 @@
 'use client'
 import { createContext, useCallback, useContext, useState } from "react";
-import { Modal } from "./Modal";
+import { MassiveModal, Modal } from "./Modal";
 import Spacing from "../Spacing/Spacing";
 
 type ModalConfig = {
 	id: string;
 	content: React.ReactNode;
+	style?: "default" | "massive";
 	onClose?: () => void;
 };
 
 type ModalContextType = {
 	showModal: (config: Omit<ModalConfig, "id">) => void;
+	showMassiveModal: (config: Omit<ModalConfig, "id">) => void;
 	closeModal: (id: string) => void;
 	close: () => void;
 };
@@ -38,7 +40,12 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
 
 	const showModal = useCallback((config: Omit<ModalConfig, "id">) => {
 		const id = generateUUIDv4();
-		setModals((prev) => [...prev, { ...config, id }]);
+		setModals((prev) => [...prev, { ...config, id, style: "default" }]);
+	}, []);
+
+	const showMassiveModal = useCallback((config: Omit<ModalConfig, "id">) => {
+		const id = generateUUIDv4();
+		setModals((prev) => [...prev, { ...config, id, style: "massive" }]);
 	}, []);
 
 	const close =  useCallback(() => {
@@ -55,12 +62,14 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
 	}, []);
 
 	return (
-		<ModalContext.Provider value={{ showModal, closeModal, close }}>
+		<ModalContext.Provider value={{ showModal, showMassiveModal, closeModal, close }}>
 			{children}
 			{modals.map((modal, index) => {
-				return <Modal key={index}>
-					{modal.content}
-				</Modal>
+				if (modal.style == "default") {
+					return <Modal key={index}>{modal.content}</Modal>
+				} else {
+					return <MassiveModal key={index} close={close}>{modal.content}</MassiveModal>
+				}
 			})}
 		</ModalContext.Provider>
 	);

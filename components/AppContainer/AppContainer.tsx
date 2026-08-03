@@ -3,7 +3,7 @@ import "./AppContainer.css"
 import { ReactNode } from "react"
 import { MinwebLeadFinderLogo } from "../Icons/Icon";
 import { useRouter } from "next/navigation";
-import { Bell, ChevronRight, House, LayoutTemplate, Menu, ScrollText, Star, UserRound } from "lucide-react";
+import { Bell, ChevronRight, FolderRoot, House, LayoutTemplate, Menu, ScrollText, Star } from "lucide-react";
 import { useModal } from "../Modal/ModalContext";
 
 type AppContainerProps = {
@@ -21,6 +21,16 @@ export default function AppContainer ({ children }: AppContainerProps) {
          href: "/", color: "#880224"
       },
       {
+         name: "Automated Lead Lists",
+         icon: <FolderRoot size={17} />,
+         href: "/auto-lead-lists", color: "#6a009b"
+      },
+      {
+         name: "Lead Automation Queue",
+         icon: <ScrollText size={17} />,
+         href: "/automated-leads-queue", color: "#91a100"
+      },
+      {
          name: "Starred Leads",
          icon: <Star size={17} />,
          href: "/starred-leads", color: "#00408a"
@@ -29,11 +39,6 @@ export default function AppContainer ({ children }: AppContainerProps) {
          name: "Website Audit Reports",
          icon: <LayoutTemplate size={17} />,
          href: "/website-audit-reports", color: "#da6f45"
-      },
-      {
-         name: "Lead Automation Queue",
-         icon: <ScrollText size={17} />,
-         href: "/automated-leads-queue", color: "#91a100"
       },
       {
          name: "Notifications",

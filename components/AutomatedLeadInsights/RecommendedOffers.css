@@ -1,0 +1,28 @@
+.rec-off-best-match-card {
+   width: 100%;
+   max-width: 600px;
+   border-radius: 20px;
+   background-color: #ecacff;
+   color: #46005c;
+   padding: 25px 30px;
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+}
+
+.rec-off-best-match-icon {
+   width: 40px;
+   aspect-ratio: 1;
+   border-radius: 8px;
+   padding: 5px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   color: #46005c;
+   background-color: white;
+}
+
+.dashed-divider-line {
+   border-top: 1px dashed #46005c;
+   height: 1px;
+}

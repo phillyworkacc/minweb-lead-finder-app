@@ -1,0 +1,38 @@
+.priority-scale {
+   width: 100%;
+   display: flex;
+   flex-direction: column;
+   gap: 5px;
+   min-width: 300px;
+   max-width: 400px;
+}
+
+.priority-scale > .priority-bars {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 2px;
+}
+
+.priority-scale > .priority-bars > .priority-bar {
+   width: 100%;
+   height: 8px;
+   background-color: #dddddd;
+   border-radius: 999px;
+}
+.priority-scale > .priority-bars > .priority-bar.low { background-color: #c23333; }
+.priority-scale > .priority-bars > .priority-bar.medium { background-color: #c27833; }
+.priority-scale > .priority-bars > .priority-bar.high { background-color: #2da32d; }
+
+.priority-scale > .priority-bar-labels {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   font-size: 0.7rem;
+}
+
+.priority-scale > .priority-bar-labels > .label {
+   width: fit-content;
+}
