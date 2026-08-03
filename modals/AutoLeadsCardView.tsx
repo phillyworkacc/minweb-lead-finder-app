@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react";
 import { BusinessIcon } from "@/components/Icons/Icon";
-import { Calendar, ChevronLeft, ChevronRight, Globe, Mail, MapPin, Phone, SquareArrowOutUpRight } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Globe, Mail, MapPin, Phone, Search, SquareArrowOutUpRight } from "lucide-react";
 import { leadCardItemEllipsis, websiteFormatting } from "@/machine/helpers";
 import { formatMilliseconds } from "@/utils/date";
 import Link from "next/link";
@@ -76,7 +76,10 @@ export default function AutoLeadsCardView ({ automatedLeads, currentLeadIndex }:
          </div>
 
          {(allAutoLeads[viewingIndex].phoneNumber) ? (
-            <div className="box full" style={{ maxWidth: "350px" }}>
+            <div className="box full dfb wrap gap-5" style={{ maxWidth: "350px" }}>
+               <Link href={`https://google.com/search?q=${encodeURIComponent(`${allAutoLeads[viewingIndex].name} ${allAutoLeads[viewingIndex].address}`)}`} target="_blank">
+                  <button className="xxxs pd-15 full pdx-15 border-radius-15 whitespace-nowrap mw-500"><Search size={16} /> Google Search</button>
+               </Link>
                <Link href={`mailto:${leadCardItemEllipsis(allAutoLeads[viewingIndex].email)}`} target="_blank">
                   <button className="xxxs pd-15 full pdx-15 border-radius-15 whitespace-nowrap mw-500"><Phone size={14} /> {allAutoLeads[viewingIndex].phoneNumber}</button>
                </Link>
