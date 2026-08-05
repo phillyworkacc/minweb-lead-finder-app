@@ -52,7 +52,8 @@ export async function getWebsiteMetadata (url: string): Promise<{ websiteTitle: 
 
 export async function useMinwebAiApi (prompt: string) {
    try {
-      const url = "http://192.168.0.104:3080/use-ai"; // testing url
+      // const url = "http://192.168.0.104:3080/use-ai"; // testing url
+      const url = "https://lead-validating-pipeline.onrender.com/use-ai";
       const response = await fetch(url, {
          method: "POST",
          headers: {
