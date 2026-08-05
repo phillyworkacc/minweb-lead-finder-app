@@ -74,6 +74,50 @@ export async function updateAutomatedLeadStarred (leadId: string, leadListId: st
    }
 }
 
+export async function updateAutomatedLeadOutreachMsg (leadId: string, leadListId: string, message: string) {
+   try {
+      const updated = await dalDbOperation(async () => {
+         const res = await db
+            .update(automatedLeadsTable)
+            .set({ messageToSend: message })
+            .where(and(
+               eq(automatedLeadsTable.leadListId, leadListId),
+               eq(automatedLeadsTable.leadId, leadId)
+            ));
+
+         return (res.rowCount === 1);
+      })
+   
+      return updated.success ? updated.data : false;
+   } catch (e) {
+      return false;
+   }
+}
+
+type ItemsToUpdate = {
+   email: string;
+   phoneNumber: string;
+}
+export async function updateAutomatedLeadItems (leadId: string, leadListId: string, items: ItemsToUpdate) {
+   try {
+      const updated = await dalDbOperation(async () => {
+         const res = await db
+            .update(automatedLeadsTable)
+            .set({ ...items })
+            .where(and(
+               eq(automatedLeadsTable.leadListId, leadListId),
+               eq(automatedLeadsTable.leadId, leadId)
+            ));
+
+         return (res.rowCount === 1);
+      })
+   
+      return updated.success ? updated.data : false;
+   } catch (e) {
+      return false;
+   }
+}
+
 export async function deleteAutomatedLeadList (leadListId: string) {
    try {
       const deleted = await dalDbOperation(async () => {
@@ -122,3 +166,15 @@ export async function updateLeadQueueItemPriority (leadQueueItemId: number, newP
    }
 }
 
+export async function deleteLeadQueueItem (leadQueueItemId: number): Promise<boolean> {
+   try {
+      const updated = await dalDbOperation(async () => {
+         const res = await db.delete(leadAutomationQueueTable).where(eq(leadAutomationQueueTable.id, leadQueueItemId));
+         return res.rowCount === 1;
+      })
+
+      return updated.success ? updated.data : false;
+   } catch (e) {
+      return false;
+   }
+}

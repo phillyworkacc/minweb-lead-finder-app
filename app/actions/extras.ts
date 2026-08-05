@@ -49,3 +49,21 @@ export async function getWebsiteMetadata (url: string): Promise<{ websiteTitle: 
       return null;
    }
 }
+
+export async function useMinwebAiApi (prompt: string) {
+   try {
+      const url = "http://192.168.0.104:3080/use-ai"; // testing url
+      const response = await fetch(url, {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+            "mw-api-key-lv": process.env.MINWEB_LV_API_KEY!
+         },
+         body: JSON.stringify({ prompt }),
+      });
+      const data = await response.json();
+      return data;
+   } catch (err) {
+      return false;
+   }
+}

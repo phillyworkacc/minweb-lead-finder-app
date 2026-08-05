@@ -72,6 +72,13 @@ export default function LeadAutomationQueueTable () {
                   return [ ...newQueue ]
                })
             }}
+            afterDeleteFunction={() => {
+               setLeadAutomationQueue(p => {
+                  const idOfLeadQueueItem = p.indexOf(leadQueueItem);
+                  const newQueue: any[] = [ ...p.filter(laq => (laq.id !== p[idOfLeadQueueItem].id)) ];
+                  return [ ...newQueue ]
+               })
+            }}
          />
       })
    }

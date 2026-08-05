@@ -1,0 +1,144 @@
+.wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  padding: 10px;
+}
+
+.wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs {
+  display: inline-flex;
+  gap: 10px;
+  padding: 8px;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255,255,255,.18),
+      rgba(255,255,255,.08)
+    );
+
+  backdrop-filter:
+    blur(28px)
+    saturate(180%);
+
+  -webkit-backdrop-filter:
+    blur(28px)
+    saturate(180%);
+
+  border: 1px solid rgba(255,255,255,.2);
+
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.4),
+    inset 0 -1px 1px rgba(255,255,255,.08),
+    0 8px 30px rgba(0,0,0,.18);
+}
+
+.tab {
+  position: relative;
+
+  border: none;
+  outline: none;
+
+  border-radius: 999px;
+
+  background: transparent;
+
+  color: rgba(255,255,255,.75);
+
+  padding: 12px 22px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition:
+    transform .25s cubic-bezier(.2,.8,.2,1),
+    color .25s,
+    background .25s,
+    box-shadow .25s;
+}
+
+.tab::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  border-radius: inherit;
+
+  opacity: 0;
+
+  transition: .3s;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.28),
+      rgba(255,255,255,.06)
+    );
+
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.4),
+    inset 0 -1px 1px rgba(255,255,255,.05);
+}
+
+.tab::after {
+  content: "";
+
+  position: absolute;
+
+  top: 2px;
+  left: 8%;
+  right: 8%;
+  height: 40%;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      rgba(255,255,255,.55),
+      transparent
+    );
+
+  opacity: 0;
+
+  transition: .3s;
+
+  pointer-events: none;
+}
+
+.tab:hover {
+  transform: translateY(-1px);
+  color: white;
+}
+
+.active {
+  color: white;
+
+  transform: scale(1.04);
+}
+
+.active::before,
+.active::after {
+  opacity: 1;
+}
+
+.active {
+  box-shadow:
+    0 4px 18px rgba(255,255,255,.15),
+    0 12px 28px rgba(0,0,0,.18);
+}
+
+.tab span {
+  position: relative;
+  z-index: 2;
+}

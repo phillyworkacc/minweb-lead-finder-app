@@ -61,7 +61,7 @@ export const automatedLeadsTable = pgTable("automated_leads", {
    audit: text("audit"),
    leadScore: text("lead_score"),
    offersForLead: text("offers_for_lead"),
-   outreachPrompt: text("outreach_prompt"),
+   messageToSend: text("message_to_send"),
 });
 
 export const leadAutomationQueueTable = pgTable("lead_automation_queue", {

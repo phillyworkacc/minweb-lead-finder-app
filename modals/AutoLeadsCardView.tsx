@@ -1,17 +1,23 @@
 "use client"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BusinessIcon } from "@/components/Icons/Icon";
-import { Calendar, ChevronLeft, ChevronRight, Globe, Mail, MapPin, Phone, Search, SquareArrowOutUpRight, Star } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Globe, Mail, MapPin, Phone, Search, SquareArrowOutUpRight, Star, Copy } from "lucide-react";
 import { leadCardItemEllipsis, websiteFormatting } from "@/machine/helpers";
 import { formatMilliseconds } from "@/utils/date";
 import { updateAutomatedLeadStarred } from "@/app/actions/lead-automation";
 import { toast } from "sonner";
+import { copyToClipboard } from "@/lib/str";
+import { offerPrices } from "@/utils/offerPrices";
+import UpdateLeadOutreachMessage from "@/components/ExtraModalComponents/UpdateLeadOutreachMessage";
 import Link from "next/link";
 import Spacing from "@/components/Spacing/Spacing";
 import WebsiteIntelligence from "@/components/AutomatedLeadInsights/WebsiteIntelligence";
 import SalesPriority from "@/components/AutomatedLeadInsights/SalesPriority";
 import RecommendedOffers from "@/components/AutomatedLeadInsights/RecommendedOffers";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
+import MinwebReceiptGen from "@/components/MinwebReceiptGen/MinwebReceiptGen";
+import UpdateLeadItems from "@/components/ExtraModalComponents/UpdateLeadItems";
+import LiquidPillTabs from "@/components/LiquidPillTabs/LiquidPillTabs";
 
 type AutoLeadsCardViewProps = {
    automatedLeads: AutomatedLead[];
@@ -21,10 +27,6 @@ type AutoLeadsCardViewProps = {
 export default function AutoLeadsCardView ({ automatedLeads, currentLeadIndex }: AutoLeadsCardViewProps) {
    const [allAutoLeads, setAllAutoLeads] = useState<AutomatedLead[]>(automatedLeads);
    const [viewingIndex, setViewingIndex] = useState<number>(currentLeadIndex);
-
-   useEffect(() => {
-      console.log(allAutoLeads[viewingIndex])
-   }, [viewingIndex])
 
    function gotoPreviousLead () {
       if (viewingIndex === 0) return;
@@ -107,20 +109,30 @@ export default function AutoLeadsCardView ({ automatedLeads, currentLeadIndex }:
             </div>
          </>) : (<></>)}
 
-         {(allAutoLeads[viewingIndex].phoneNumber) ? (
-            <div className="box full dfb wrap gap-5" style={{ maxWidth: "350px" }}>
-               <Link href={`https://google.com/search?q=${encodeURIComponent(`${allAutoLeads[viewingIndex].name} ${allAutoLeads[viewingIndex].address}`)}`} target="_blank">
-                  <button className="xxxs pd-15 full pdx-15 border-radius-15 whitespace-nowrap mw-500"><Search size={16} /> Google Search</button>
+         <div className="box full dfb wrap gap-5" style={{ maxWidth: "650px" }}>
+            <Link href={`https://google.com/search?q=${encodeURIComponent(`${allAutoLeads[viewingIndex].name} ${allAutoLeads[viewingIndex].address}`)}`} target="_blank">
+               <button className="xxxs pd-15 full pdx-15 border-radius-15 whitespace-nowrap mw-500"><Search size={16} /> Google Search</button>
+            </Link>
+            {(allAutoLeads[viewingIndex].phoneNumber) ? (
+               <Link href={`tel:${leadCardItemEllipsis(allAutoLeads[viewingIndex].phoneNumber).replaceAll(" ", "")}`} target="_blank">
+                  <button className="xxxs pd-15 full pdx-15 border-radius-15 whitespace-nowrap mw-500"><Phone size={16} /> {allAutoLeads[viewingIndex].phoneNumber}</button>
                </Link>
-               <Link href={`mailto:${leadCardItemEllipsis(allAutoLeads[viewingIndex].email)}`} target="_blank">
-                  <button className="xxxs pd-15 full pdx-15 border-radius-15 whitespace-nowrap mw-500"><Phone size={14} /> {allAutoLeads[viewingIndex].phoneNumber}</button>
-               </Link>
-               <AwaitButton 
-                  className="xxxs pd-15 outline-black tiny-shadow fit pdx-15 border-radius-15 whitespace-nowrap mw-500"
-                  onClick={toggleStarredLead} blackSpinner
-               ><Star size={14} color="#ffa010" fill="#ffa010" /> {allAutoLeads[viewingIndex].starred ? 'Un-star' : 'Star'} Lead</AwaitButton>
-            </div>
-         ) : <></>}
+            ) : <></>}
+            <AwaitButton 
+               className="xxxs pd-15 outline-black tiny-shadow fit pdx-15 border-radius-15 whitespace-nowrap mw-500"
+               onClick={toggleStarredLead} blackSpinner
+            ><Star size={16} color="#ffa010" fill="#ffa010" /> {allAutoLeads[viewingIndex].starred ? 'Un-star' : 'Star'} Lead</AwaitButton>
+         </div>
+
+         {/* <LiquidPillTabs
+            tabs={[
+               { id: "web-analysis", label: "Website Analysis" },
+               { id: "seo", label: "SEO" },
+            ]}
+            active="seo"
+            onChange={(id) => toast(id)}
+         /> */}
+
          <Spacing size={2} />
          <div className="divider-line-auto-lead-card" />
 
@@ -145,6 +157,59 @@ export default function AutoLeadsCardView ({ automatedLeads, currentLeadIndex }:
          <div className="box full">
             <RecommendedOffers leadOffers={JSON.parse(allAutoLeads[viewingIndex].offersForLead)} />
          </div>
+
+         <Spacing size={2} />
+         <div className="divider-line-auto-lead-card" />
+         <Spacing size={2} />
+         <MinwebReceiptGen 
+            businessName={allAutoLeads[viewingIndex].name}
+            items={[ ...JSON.parse(allAutoLeads[viewingIndex].offersForLead).map((o: Offer) => ({
+               itemName: o.offer, price: offerPrices[o.offer]
+            })) ]}
+            currencySymbol="£"
+            
+            logoSrc="https://minwebagency.com/logo.png"
+         />
+         
+         {(!allAutoLeads[viewingIndex].messageToSend) ? (<>
+            <Spacing size={2} />
+            <div className="divider-line-auto-lead-card" />
+            <Spacing size={2} />
+            <UpdateLeadOutreachMessage
+               lead={allAutoLeads[viewingIndex]}
+               onSuccess={(aiResponse) => setAllAutoLeads(p => {
+                  const copiedP = [ ...p ];
+                  copiedP[viewingIndex].messageToSend = aiResponse.data.message;
+                  return ([ ...copiedP ]);
+               }) }
+            />
+         </>) : (<>
+            <Spacing size={2} />
+            <div className="divider-line-auto-lead-card" />
+            <Spacing size={2} />
+            <div className="box full dfb column gap-10">
+               <div className="text-m full bold-600">Outreach Message</div>
+               <div className="text-xxs full">{allAutoLeads[viewingIndex].messageToSend}</div>
+               <button 
+                  className="xxxs pd-15 fit pdx-2 border-radius-15 outline-black tiny-shadow whitespace-nowrap mw-500"
+                  onClick={() => copyToClipboard(allAutoLeads[viewingIndex].messageToSend)}
+               ><Copy size={16} /> Copy Message</button>
+            </div>
+         </>)}
+
+         
+         <Spacing size={2} />
+         <div className="divider-line-auto-lead-card" />
+         <Spacing size={2} />
+         <UpdateLeadItems
+            lead={allAutoLeads[viewingIndex]}
+            onSuccess={({ email, phoneNumber }) => setAllAutoLeads(p => {
+               const copiedP = [ ...p ];
+               copiedP[viewingIndex].email = email;
+               copiedP[viewingIndex].phoneNumber = phoneNumber;
+               return ([ ...copiedP ]);
+            }) }
+         />
 
          <Spacing size={5} />
       </div>

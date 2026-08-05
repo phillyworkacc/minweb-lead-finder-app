@@ -80,7 +80,7 @@ type AutomatedLead = {
    audit: string;
    leadScore: string;
    offersForLead: string;
-   outreachPrompt: string;
+   messageToSend: string;
 }
 
 // CUSTOM TYPES FOR LEAD JSONs

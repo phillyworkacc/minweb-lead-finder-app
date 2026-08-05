@@ -4,15 +4,16 @@ import { useModal } from "@/components/Modal/ModalContext";
 import { titleCase } from "@/lib/str";
 import { formatMilliseconds } from "@/utils/date";
 import { MapPin, UserRound } from "lucide-react";
-import { updateLeadQueueItemPriority } from "@/app/actions/lead-automation";
+import { deleteLeadQueueItem, updateLeadQueueItemPriority } from "@/app/actions/lead-automation";
 import { toast } from "sonner";
 
 type LAQueueItemProps = {
    leadQueueItem: LeadQueueItem;
    afterRunFunction: (priority: string) => void;
+   afterDeleteFunction: () => void;
 }
 
-export default function LAQueueItem ({ leadQueueItem, afterRunFunction }: LAQueueItemProps) {
+export default function LAQueueItem ({ leadQueueItem, afterRunFunction, afterDeleteFunction }: LAQueueItemProps) {
    const { close } = useModal();
 
    async function updateLAQPriority (priority: string) {
@@ -20,8 +21,20 @@ export default function LAQueueItem ({ leadQueueItem, afterRunFunction }: LAQueu
       if (updated) {
          toast.success("Updated Priority for Lead Queue Item");
          afterRunFunction(priority);
+         close();
       } else {
          toast.error("Failed to update priority");
+      }
+   }
+
+   async function deleteLAQItem () {
+      const deleted = await deleteLeadQueueItem(leadQueueItem.id);
+      if (deleted) {
+         toast.success("Deleted a Lead Queue Item");
+         afterDeleteFunction();
+         close();
+      } else {
+         toast.error("Failed to delete this lead automation item");
       }
    }
 
@@ -57,10 +70,16 @@ export default function LAQueueItem ({ leadQueueItem, afterRunFunction }: LAQueu
                   />
                </div>
             </div>
+            <div className="box full pd-1">
+               <div className="text-s full bold-600">Delete This Automation Item</div>
+               <div className="box full dfb align-center justify-center pd-1 gap-10">
+                  <button className="xxxs full pd-12 delete tiny-shadow" onClick={deleteLAQItem}>Delete</button>
+               </div>
+            </div>
          </>)}
          
          <div className="box full dfb align-center justify-center pd-1 gap-10">
-            <button className="xxxs full pd-12 outline-black" onClick={close}>Close</button>
+            <button className="xxxs full pd-12 outline-black tiny-shadow" onClick={close}>Close</button>
          </div>
       </div>
    )
