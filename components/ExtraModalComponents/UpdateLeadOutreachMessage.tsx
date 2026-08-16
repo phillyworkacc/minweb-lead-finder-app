@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { CustomSelect } from "../Select/CustomSelect";
 import { Mail, MessageCircleMore, Sparkles } from "lucide-react";
 import AwaitButton from "../AwaitButton/AwaitButton";
+import { copyToClipboard } from "@/lib/str";
 
 type UpdateLeadOutreachMessageProps = {
    lead: AutomatedLead;
@@ -30,7 +31,17 @@ export default function UpdateLeadOutreachMessage ({ lead, onSuccess }: UpdateLe
          leadOffers: JSON.parse(lead.offersForLead) as any,
          channel: outreachMsgChannel, recentOpeners: [], includeOptOutLine: false
       });
-      const aiResponse = await useMinwebAiApi(outreachPrompt);
+
+      const url = "https://lead-validating-pipeline.onrender.com/use-ai";
+      const response = await fetch(url, {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+            "mw-api-key-lv": 'Ig5FtOyFb6yP83VJle8F3'
+         },
+         body: JSON.stringify({ prompt: outreachPrompt }),
+      });
+      const aiResponse = await response.json();
       const validateResponse = validateOutreach(aiResponse.data, outreachMsgChannel);
       if (validateResponse.valid) {
          const updated = await updateAutomatedLeadOutreachMsg(lead.leadId, lead.leadListId, aiResponse.data.message);

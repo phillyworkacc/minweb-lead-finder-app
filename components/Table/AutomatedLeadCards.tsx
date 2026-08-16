@@ -1,22 +1,17 @@
 'use client'
 import './Table.css'
+import React, { useState } from 'react';
 import { BusinessIcon } from '../Icons/Icon';
 import { toast } from 'sonner';
-import { Check, Funnel, Globe, Mail, MapPin, Phone, Search, Star, Trash2 } from 'lucide-react';
+import { Funnel, Globe, Mail, MapPin, Phone, Star } from 'lucide-react';
 import { updateLeadColdCall, updateLeadStarred } from '@/app/actions/leads';
-import { copyToClipboard } from '@/lib/str';
-import { useRouter } from 'next/navigation';
 import { useModal } from '../Modal/ModalContext';
 import { leadOffersResolver, leadScoreResolver, websiteScrapedInfoResolver } from '@/machine/typeResolver';
-import MultiActionDropdown, { AutomatedLeadsFilterActionDropdown } from '../MultiActionDropdown/MultiActionDropdown';
+import { AutomatedLeadsFilterActionDropdown } from '../MultiActionDropdown/MultiActionDropdown';
+import { filterDropdownActions, leadCardItemEllipsis, websiteFormatting } from '@/machine/helpers';
 import Select from '../Select/Select';
-import Checkbox from '../Checkbox/Checkbox';
-import Link from 'next/link';
 import Card from '../Card/Card';
 import Spacing from '../Spacing/Spacing';
-import DeleteLead from '@/modals/DeleteLead';
-import React, { ReactNode, useState } from 'react';
-import { filterDropdownActions, leadCardItemEllipsis, websiteFormatting } from '@/machine/helpers';
 import AutoLeadsCardView from '@/modals/AutoLeadsCardView';
 
 type AutomatedLeadCardsProps = {
@@ -80,8 +75,6 @@ export default function AutomatedLeadCards ({ automatedLeads }: AutomatedLeadCar
       needsWebRedesignMaintenance: null
    });
 
-   
-
    const coldCallOptions = ["Missed", "Booked", "Fail", "Not Answered", "Not Called"];
 
    const onSelectColdCallOption = async (lead: AutomatedLead, option: string) => {
@@ -112,7 +105,11 @@ export default function AutomatedLeadCards ({ automatedLeads }: AutomatedLeadCar
 
    const applyFilters = (leads: AutomatedLead[]): AutomatedLead[] => {
       return leads
-         .filter(lead => lead.name.toLowerCase().includes(searchLeads.toLowerCase())) // search filter
+         .filter(lead => (
+            lead.name.toLowerCase().includes(searchLeads.toLowerCase()) ||
+            lead.address.toLowerCase().includes(searchLeads.toLowerCase()) ||
+            lead.email.toLowerCase().includes(searchLeads.toLowerCase())
+         )) // search filter
          .filter(lead => {
             if (!filters.hasEmail) return true;
             return (lead.email !== "");
@@ -222,7 +219,7 @@ export default function AutomatedLeadCards ({ automatedLeads }: AutomatedLeadCar
                Object.keys(filters).map((k) => filters[k]).includes(true)
             ) && (<div className="box full mb-05">
                <div className="text-xxxs full grey-4 mb-05">
-                  After filters, {applyFilters(allLeads).filter(lead => lead.name.toLowerCase().includes(searchLeads.toLowerCase())).length} lead(s) found
+                  After filters, {applyFilters(allLeads).length} lead(s) found
                </div>
             </div>)}
          </div>
