@@ -80,3 +80,12 @@ export const pushNotificationsTable = pgTable("push_notifications", {
    createdAt: text("created_at"),
    updatedAt: text("updated_at")
 });
+
+export const clientPreviewWebsitesTable = pgTable("client_preview_websites", {
+   id: serial("id").primaryKey(),
+   leadListId: text("lead_list_id"),
+   leadId: text("lead_id"),
+   websiteId: text("website_id"),
+   websiteConfig: text("website_config"),
+   createdAt: text("created_at")
+});

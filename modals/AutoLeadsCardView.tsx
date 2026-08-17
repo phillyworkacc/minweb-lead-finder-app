@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react";
 import { BusinessIcon } from "@/components/Icons/Icon";
-import { Calendar, ChevronLeft, ChevronRight, Globe, Mail, MapPin, Phone, Search, SquareArrowOutUpRight, Star, Copy } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Globe, Mail, MapPin, Phone, Search, SquareArrowOutUpRight, Star, Copy, Brain, MessageCircle, UserRoundPen, ReceiptPoundSterling, HandCoins, Handshake, LayersPlus } from "lucide-react";
 import { leadCardItemEllipsis, websiteFormatting } from "@/machine/helpers";
 import { formatMilliseconds } from "@/utils/date";
 import { updateAutomatedLeadStarred } from "@/app/actions/lead-automation";
@@ -17,7 +17,8 @@ import RecommendedOffers from "@/components/AutomatedLeadInsights/RecommendedOff
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
 import MinwebReceiptGen from "@/components/MinwebReceiptGen/MinwebReceiptGen";
 import UpdateLeadItems from "@/components/ExtraModalComponents/UpdateLeadItems";
-import LiquidPillTabs from "@/components/LiquidPillTabs/LiquidPillTabs";
+import SelectionTab from "@/components/SelectionTab/SelectionTab";
+import CreateWebsiteConfig from "@/components/ExtraModalComponents/CreateWebsiteConfig";
 
 type AutoLeadsCardViewProps = {
    automatedLeads: AutomatedLead[];
@@ -27,6 +28,7 @@ type AutoLeadsCardViewProps = {
 export default function AutoLeadsCardView ({ automatedLeads, currentLeadIndex }: AutoLeadsCardViewProps) {
    const [allAutoLeads, setAllAutoLeads] = useState<AutomatedLead[]>(automatedLeads);
    const [viewingIndex, setViewingIndex] = useState<number>(currentLeadIndex);
+   const [toolView, setToolView] = useState("");
 
    function gotoPreviousLead () {
       if (viewingIndex === 0) return;
@@ -124,94 +126,123 @@ export default function AutoLeadsCardView ({ automatedLeads, currentLeadIndex }:
             ><Star size={16} color="#ffa010" fill="#ffa010" /> {allAutoLeads[viewingIndex].starred ? 'Un-star' : 'Star'} Lead</AwaitButton>
          </div>
 
-         {/* <LiquidPillTabs
-            tabs={[
-               { id: "web-analysis", label: "Website Analysis" },
-               { id: "seo", label: "SEO" },
+         <Spacing size={2} />
+         <SelectionTab 
+            items={[
+               {
+                  label: <><Brain size={18} /> Website Intelligence</>,
+                  action: () => setToolView("website-intelligence"),
+                  color: "#63c8ff", foreground: "#005c8d"
+               },
+               {
+                  label: <><Handshake size={18} /> Sales Priority</>,
+                  action: () => setToolView("sales-priority"),
+                  color: "#a3ff84", foreground: "#1c7000"
+               },
+               {
+                  label: <><HandCoins size={18} /> Recommended Offers</>,
+                  action: () => setToolView("recommended-offers"),
+                  color: "#ffa2a2", foreground: "#8b0000"
+               },
+               {
+                  label: <><ReceiptPoundSterling size={18} /> Minweb Receipt</>,
+                  action: () => setToolView("minweb-receipt"),
+                  color: "#ffe395", foreground: "#866300"
+               },
+               {
+                  label: <><MessageCircle size={18} /> Lead Outreach</>,
+                  action: () => setToolView("lead-outreach"),
+                  color: "#b4ffe6", foreground: "#00573a"
+               },
+               {
+                  label: <><UserRoundPen size={18} /> Update Lead</>,
+                  action: () => setToolView("update-lead"),
+                  color: "#d8b4ff", foreground: "#3a0077"
+               },
+               {
+                  label: <><LayersPlus size={18} /> Create Preview Website</>,
+                  action: () => setToolView("create-website"),
+                  color: "#a3bcca", foreground: "#193f55"
+               },
             ]}
-            active="seo"
-            onChange={(id) => toast(id)}
-         /> */}
-
-         <Spacing size={2} />
-         <div className="divider-line-auto-lead-card" />
-
-         <Spacing size={2} />
-         <div className="box full">
-            <WebsiteIntelligence
-               websiteAudit={JSON.parse(allAutoLeads[viewingIndex].audit)}
-               websiteScrapedInfo={JSON.parse(allAutoLeads[viewingIndex].websiteScrapedInfo)}
-            />
-         </div>
-         <Spacing size={2} />
-         <div className="divider-line-auto-lead-card" />
-
-         <Spacing size={2} />
-         <div className="box full">
-            <SalesPriority leadScore={JSON.parse(allAutoLeads[viewingIndex].leadScore)} />
-         </div>
-         <Spacing size={2} />
-         <div className="divider-line-auto-lead-card" />
-         
-         <Spacing size={2} />
-         <div className="box full">
-            <RecommendedOffers leadOffers={JSON.parse(allAutoLeads[viewingIndex].offersForLead)} />
-         </div>
-
-         <Spacing size={2} />
-         <div className="divider-line-auto-lead-card" />
-         <Spacing size={2} />
-         <MinwebReceiptGen 
-            businessName={allAutoLeads[viewingIndex].name}
-            items={[ ...JSON.parse(allAutoLeads[viewingIndex].offersForLead).map((o: Offer) => ({
-               itemName: o.offer, price: offerPrices[o.offer]
-            })) ]}
-            currencySymbol="£"
-            
-            logoSrc="https://minwebagency.com/logo.png"
          />
-         
-         {(!allAutoLeads[viewingIndex].messageToSend) ? (<>
-            <Spacing size={2} />
-            <div className="divider-line-auto-lead-card" />
-            <Spacing size={2} />
-            <UpdateLeadOutreachMessage
-               lead={allAutoLeads[viewingIndex]}
-               onSuccess={(aiResponse) => setAllAutoLeads(p => {
-                  const copiedP = [ ...p ];
-                  copiedP[viewingIndex].messageToSend = aiResponse.data.message;
-                  return ([ ...copiedP ]);
-               }) }
-            />
-         </>) : (<>
-            <Spacing size={2} />
-            <div className="divider-line-auto-lead-card" />
-            <Spacing size={2} />
-            <div className="box full dfb column gap-10">
-               <div className="text-m full bold-600">Outreach Message</div>
-               <div className="text-xxs full">{allAutoLeads[viewingIndex].messageToSend}</div>
-               <button 
-                  className="xxxs pd-15 fit pdx-2 border-radius-15 outline-black tiny-shadow whitespace-nowrap mw-500"
-                  onClick={() => copyToClipboard(allAutoLeads[viewingIndex].messageToSend)}
-               ><Copy size={16} /> Copy Message</button>
+         <Spacing size={2} />
+
+         {(toolView == "website-intelligence") && (<>
+            <div className="box full">
+               <WebsiteIntelligence
+                  websiteAudit={JSON.parse(allAutoLeads[viewingIndex].audit)}
+                  websiteScrapedInfo={JSON.parse(allAutoLeads[viewingIndex].websiteScrapedInfo)}
+               />
             </div>
          </>)}
 
-         
-         <Spacing size={2} />
-         <div className="divider-line-auto-lead-card" />
-         <Spacing size={2} />
-         <UpdateLeadItems
-            lead={allAutoLeads[viewingIndex]}
-            onSuccess={({ email, phoneNumber }) => setAllAutoLeads(p => {
-               const copiedP = [ ...p ];
-               copiedP[viewingIndex].email = email;
-               copiedP[viewingIndex].phoneNumber = phoneNumber;
-               return ([ ...copiedP ]);
-            }) }
-         />
+         {(toolView == "sales-priority") && (<>
+            <div className="box full">
+               <SalesPriority leadScore={JSON.parse(allAutoLeads[viewingIndex].leadScore)} />
+            </div>
+            <Spacing size={2} />
+         </>)}
 
-         <Spacing size={5} />
+         {(toolView == "recommended-offers") && (<>
+            <div className="box full">
+               <RecommendedOffers leadOffers={JSON.parse(allAutoLeads[viewingIndex].offersForLead)} />
+            </div>
+         </>)}
+
+         {(toolView == "minweb-receipt") && (<>
+            <MinwebReceiptGen 
+               businessName={allAutoLeads[viewingIndex].name}
+               items={[ ...JSON.parse(allAutoLeads[viewingIndex].offersForLead).map((o: Offer) => ({
+                  itemName: o.offer, price: offerPrices[o.offer]
+               })) ]}
+               currencySymbol="£"
+               
+               logoSrc="https://minwebagency.com/logo.png"
+            />
+         </>)}
+
+         {(toolView == "lead-outreach") && (<>
+            {(!allAutoLeads[viewingIndex].messageToSend) ? (<>
+               <UpdateLeadOutreachMessage
+                  lead={allAutoLeads[viewingIndex]}
+                  onSuccess={(aiResponse) => setAllAutoLeads(p => {
+                     const copiedP = [ ...p ];
+                     copiedP[viewingIndex].messageToSend = aiResponse.data.message;
+                     return ([ ...copiedP ]);
+                  }) }
+               />
+            </>) : (<>
+               <div className="box full dfb column gap-10">
+                  <div className="text-m full bold-600">Outreach Message</div>
+                  <div className="text-xxs full">{allAutoLeads[viewingIndex].messageToSend}</div>
+                  <button 
+                     className="xxxs pd-15 fit pdx-2 border-radius-15 outline-black tiny-shadow whitespace-nowrap mw-500"
+                     onClick={() => copyToClipboard(allAutoLeads[viewingIndex].messageToSend)}
+                  ><Copy size={16} /> Copy Message</button>
+               </div>
+            </>)}
+         </>)}
+
+         {(toolView == "update-lead") && (<>
+            <UpdateLeadItems
+               lead={allAutoLeads[viewingIndex]}
+               onSuccess={({ email, phoneNumber }) => setAllAutoLeads(p => {
+                  const copiedP = [ ...p ];
+                  copiedP[viewingIndex].email = email;
+                  copiedP[viewingIndex].phoneNumber = phoneNumber;
+                  return ([ ...copiedP ]);
+               }) }
+            />
+         </>)}
+
+         {(toolView == "create-website") && (<>
+            <CreateWebsiteConfig
+               lead={allAutoLeads[viewingIndex]}
+            />
+         </>)}
+
+         <Spacing size={7} />
       </div>
    )
 }

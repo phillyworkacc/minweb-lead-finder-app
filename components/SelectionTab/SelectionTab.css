@@ -1,0 +1,36 @@
+.selection-tab {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   overflow-x: scroll;
+   overflow-y: hidden;
+   gap: 6px;
+}
+
+.selection-tab .tab-item {
+   width: fit-content;
+   padding: 10px 15px;
+   border-radius: 20px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 5px;
+   border: 1px solid #ececec;
+   cursor: pointer;
+   white-space: nowrap;
+   background-color: white;
+   color: black;
+}
+
+.selection-tab .tab-item.selected {
+   background-color: var(--selected-selection-tab-bg);
+   color: var(--selected-selection-tab-foreground);
+   font-weight: 600;
+}
+
+.selection-tab::-webkit-scrollbar-thumb {
+   height: 0;
+}
+.selection-tab::-webkit-scrollbar {
+   height: 0;
+}

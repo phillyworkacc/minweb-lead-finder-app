@@ -1,5 +1,7 @@
 "use server"
 
+import Groq from "groq-sdk";
+
 export async function getWebsiteMetadata (url: string): Promise<{ websiteTitle: string, icon: string; } | null> {
    try {
       const baseUrl = new URL(url).origin;
@@ -52,18 +54,18 @@ export async function getWebsiteMetadata (url: string): Promise<{ websiteTitle: 
 
 export async function useMinwebAiApi (prompt: string) {
    try {
-      // const url = "http://192.168.0.104:3080/use-ai"; // testing url
-      const url = "https://lead-validating-pipeline.onrender.com/use-ai";
-      const response = await fetch(url, {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-            "mw-api-key-lv": process.env.MINWEB_LV_API_KEY!
-         },
-         body: JSON.stringify({ prompt }),
+      const groq = new Groq();
+      const chatCompletion = await groq.chat.completions.create({
+         messages: [{ role: "user", content: prompt }],
+         model: "openai/gpt-oss-120b",
+         temperature: 0.6,
+         max_completion_tokens: 4096,
+         stream: false,
+         top_p: 0.95,
+         stop: null,
+         reasoning_effort: "medium",
       });
-      const data = await response.json();
-      return data;
+      return chatCompletion.choices[0].message.content;
    } catch (err) {
       return false;
    }
