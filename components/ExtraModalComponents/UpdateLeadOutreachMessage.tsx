@@ -34,6 +34,7 @@ export default function UpdateLeadOutreachMessage ({ lead, onSuccess }: UpdateLe
       });
 
       const response: any = await useMinwebAiApi(outreachPrompt);
+      console.log(response);
 
       if (response || response !== "") {
          const aiResponse: any = JSON.parse(response); 

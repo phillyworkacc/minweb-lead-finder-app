@@ -28,7 +28,7 @@ type AutoLeadsCardViewProps = {
 export default function AutoLeadsCardView ({ automatedLeads, currentLeadIndex }: AutoLeadsCardViewProps) {
    const [allAutoLeads, setAllAutoLeads] = useState<AutomatedLead[]>(automatedLeads);
    const [viewingIndex, setViewingIndex] = useState<number>(currentLeadIndex);
-   const [toolView, setToolView] = useState("");
+   const [toolView, setToolView] = useState("website-intelligence");
 
    function gotoPreviousLead () {
       if (viewingIndex === 0) return;

@@ -1,5 +1,4 @@
 "use server"
-
 import Groq from "groq-sdk";
 
 export async function getWebsiteMetadata (url: string): Promise<{ websiteTitle: string, icon: string; } | null> {
@@ -56,17 +55,29 @@ export async function useMinwebAiApi (prompt: string) {
    try {
       const groq = new Groq();
       const chatCompletion = await groq.chat.completions.create({
-         messages: [{ role: "user", content: prompt }],
+         messages: [
+            {
+               role: "system",
+               content: "You generate short, human sounding cold outreach messages. Follow the user's instructions exactly and return valid JSON only."
+            },
+            {
+               role: "user",
+               content: prompt
+            }
+         ],
          model: "openai/gpt-oss-120b",
-         temperature: 0.6,
-         max_completion_tokens: 4096,
+         temperature: 0.4,
+         top_p: 1,
+         max_completion_tokens: 2048,
          stream: false,
-         top_p: 0.95,
-         stop: null,
-         reasoning_effort: "medium",
+         reasoning_effort: "medium"
       });
+      if (chatCompletion.choices[0].message.content == "") {
+         return await useMinwebAiApi(prompt);
+      }
       return chatCompletion.choices[0].message.content;
    } catch (err) {
+      console.error(err)
       return false;
    }
 }
