@@ -54,7 +54,7 @@ export default function page() {
             <div className="box full dfb column gap-10">
                <Spacing size={2} />
                <div className="text-l bold-800 full">AUDIT COMPLETE</div>
-               <div className="box full dfb align-center gap-10">
+               <div className="box full dfb align-center gap-10 wrap">
                   <Link className="box fit" href={auditResult.websiteScrapedInfo.url} target="_blank" referrerPolicy="no-referrer">
                      <button className="xxxs pd-12 pdx-2 fit border-radius-15">Visit Website <ArrowUpRight size={16} /></button>
                   </Link>

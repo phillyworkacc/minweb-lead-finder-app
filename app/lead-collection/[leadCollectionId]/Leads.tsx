@@ -6,12 +6,11 @@ import { pluralSuffixer } from '@/lib/str';
 import { toast } from 'sonner';
 import { deleteLeadCollection } from '@/app/actions/leads';
 import AppWrapper from '@/components/AppContainer/AppContainer';
-import LeadsTable from '@/components/Table/LeadsTable';
 import AwaitButton from '@/components/AwaitButton/AwaitButton';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 import EditLeadCollectionName from '@/components/Forms/EditLeadCollectionName';
 import MultiActionDropdown from '@/components/MultiActionDropdown/MultiActionDropdown';
-import LeadCards from '@/components/Table/LeadCards';
+import LeadCardsV2 from '@/components/Table/LeadCardsV2';
 
 type LeadCollectionPageProps = {
    leadCollectionName: string;
@@ -85,12 +84,7 @@ export default function LeadCollectionPage ({ leads, leadCollectionName, leadCol
             Contains {leads.length} {pluralSuffixer('lead', leads.length, 's')}
          </div>
          <div className="box full dfb column gap-5">
-            <LeadCards 
-               leads={leads} 
-               onClickLead={(lead) => router.push(`/lead-collection/${lead.leadCollectionsId}/${lead.leadId}`)}
-               showSearch showCalled showStarred
-            />
-
+            <LeadCardsV2 leads={leads} />
          </div>
       </AppWrapper>
    )
