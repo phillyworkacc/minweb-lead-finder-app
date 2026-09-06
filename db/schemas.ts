@@ -19,7 +19,7 @@ export const leadCollectionsTable = pgTable("lead_collections", {
    leadCollectionsId: text("lead_collections_id"),
    name: text("name"),
    date: text("date"),
-   folders: text("folders")
+   folders: text("folders").default("all")
 });
 
 export const foldersTable = pgTable("folders", {

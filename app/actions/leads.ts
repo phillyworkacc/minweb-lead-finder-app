@@ -79,6 +79,7 @@ export async function insertLeadsWithNewLeadCollection (leads: LeadItemFormatted
             .values({
                leadCollectionsId,
                name: leadCollectionsName,
+               folders: "all",
                date: now
             });
 

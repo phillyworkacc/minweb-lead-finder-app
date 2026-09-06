@@ -1,5 +1,5 @@
 "use client"
-import { useMinwebAiApi } from "@/app/actions/extras";
+import { useMinwebAiApi, useOpenRouterAiApi } from "@/app/actions/extras";
 import { updateAutomatedLeadOutreachMsg } from "@/app/actions/lead-automation";
 import { buildOutreachPrompt, validateOutreach } from "@/utils/outreachPromptGenerator";
 import { useState } from "react";
@@ -8,6 +8,7 @@ import { CustomSelect } from "../Select/CustomSelect";
 import { Mail, MessageCircleMore, Sparkles } from "lucide-react";
 import { copyToClipboard } from "@/lib/str";
 import AwaitButton from "../AwaitButton/AwaitButton";
+import { generateWebsiteConfigPrompt } from "@/utils/generateWebsiteConfigPrompt";
 
 type UpdateLeadOutreachMessageProps = {
    lead: AutomatedLead;
@@ -20,21 +21,24 @@ export default function UpdateLeadOutreachMessage ({ lead, onSuccess }: UpdateLe
    const [outreachMsgChannel, setOutreachMsgChannel] = useState<OutreachMsgChannel>("sms");
    
    async function submitCreateMessageToSend (callback: Function) {
-      const outreachPrompt = buildOutreachPrompt({
-         sender: { firstName: "Philip", agencyName: "Minweb Agency" },
-         business: {
-            name: JSON.parse(lead.websiteScrapedInfo).title,
-            industry: "", city: "", ownerFirstName: businessOwnerName
-         },
-         websiteAudit: JSON.parse(lead.audit) as any,
-         leadScore: JSON.parse(lead.leadScore) as any,
-         leadOffers: JSON.parse(lead.offersForLead) as any,
-         channel: outreachMsgChannel, recentOpeners: [], includeOptOutLine: false,
-         hasFreeWebsitePreview: (lead.website !== "")
-      });
+      // const outreachPrompt = buildOutreachPrompt({
+      //    sender: { firstName: "Philip", agencyName: "Minweb Agency" },
+      //    business: {
+      //       name: JSON.parse(lead.websiteScrapedInfo).title,
+      //       industry: "", city: "", ownerFirstName: businessOwnerName
+      //    },
+      //    websiteAudit: JSON.parse(lead.audit) as any,
+      //    leadScore: JSON.parse(lead.leadScore) as any,
+      //    leadOffers: JSON.parse(lead.offersForLead) as any,
+      //    channel: outreachMsgChannel, recentOpeners: [], includeOptOutLine: false,
+      //    hasFreeWebsitePreview: (lead.website !== "")
+      // });
+
+      const outreachPrompt = generateWebsiteConfigPrompt(lead);
 
       const response: any = await useMinwebAiApi(outreachPrompt);
       console.log(response);
+      callback();
 
       if (response || response !== "") {
          const aiResponse: any = JSON.parse(response); 

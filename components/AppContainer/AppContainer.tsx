@@ -36,9 +36,9 @@ export default function AppContainer ({ children }: AppContainerProps) {
          href: "/starred-leads", color: "#00408a"
       },
       {
-         name: "Website Audit Reports",
+         name: "Website Audit Tool",
          icon: <LayoutTemplate size={17} />,
-         href: "/website-audit-reports", color: "#da6f45"
+         href: "/site-audit", color: "#da6f45"
       },
       {
          name: "Notifications",

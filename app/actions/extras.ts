@@ -1,5 +1,6 @@
 "use server"
 import Groq from "groq-sdk";
+import { OpenRouter } from "@openrouter/sdk";
 
 export async function getWebsiteMetadata (url: string): Promise<{ websiteTitle: string, icon: string; } | null> {
    try {
@@ -66,7 +67,7 @@ export async function useMinwebAiApi (prompt: string) {
             }
          ],
          model: "openai/gpt-oss-120b",
-         temperature: 0.4,
+         temperature: 1,
          top_p: 1,
          max_completion_tokens: 2048,
          stream: false,
@@ -78,6 +79,64 @@ export async function useMinwebAiApi (prompt: string) {
       return chatCompletion.choices[0].message.content;
    } catch (err) {
       console.error(err)
+      return false;
+   }
+}
+
+export async function useOpenRouterAiApi (prompt: string) {
+   try {
+      const openrouter = new OpenRouter({
+         apiKey: process.env.OPENROUTER_API_KEY!
+      });
+
+      // Stream the response to get reasoning tokens in usage
+      const response = await openrouter.chat.send({
+         chatRequest: {
+            model: "z-ai/glm-5.2:free",
+            messages: [
+               {
+                  role: "user",
+                  content: prompt
+               }
+            ],
+            stream: false,
+            temperature: 0.4,
+            topP: 1,
+            maxCompletionTokens: 2048,
+            reasoningEffort: "medium"
+         }
+      });
+
+      console.log(response)
+   } catch (e) {
+      console.log(e)
+      console.error(e)
+      return false;
+   }
+}
+
+export async function createWebsiteAudit (websiteUrl: string, facebookUrl: string) {
+   try {
+      const url = "https://lead-validating-pipeline.onrender.com/website-auditor";
+      const response = await fetch(url, {
+         method: "POST",
+         headers: {
+            "Content-type": "application/json",
+            "mw-api-key-lv": process.env.MINWEB_LV_API_KEY!
+         },
+         body: JSON.stringify({ url: websiteUrl, facebookUrl })
+      });
+      const result = await response.json();
+
+      if (result.success) {
+         console.log(result.data);
+         return result.data;
+      } else {
+         console.log(result.error)
+         return false;
+      }
+   } catch (err) {
+      console.error(err);
       return false;
    }
 }

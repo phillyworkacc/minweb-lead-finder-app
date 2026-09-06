@@ -1,0 +1,174 @@
+img { user-select: none; -webkit-user-drag: none; }
+
+.cwb-custom-image {
+   width: 100%;
+   max-width: 320px;
+   aspect-ratio: 1;
+   border-radius: 20px;
+   overflow: hidden;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.055);
+}
+
+.cwb-custom-image > img {
+   width: 100%;
+   aspect-ratio: 1;
+   object-fit: cover;
+   object-position: center;
+}
+
+.cwb-custom-service-image {
+   width: 100%;
+   max-width: 120px;
+   aspect-ratio: 1;
+   border-radius: 20px;
+   overflow: hidden;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.055);
+}
+
+.cwb-custom-service-image > img {
+   width: 100%;
+   aspect-ratio: 1;
+   object-fit: cover;
+   object-position: center;
+}
+
+.cwb-custom-image-removable {
+   width: 100%;
+   max-width: 320px;
+   aspect-ratio: 1;
+   border-radius: 20px;
+   overflow: hidden;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.055);
+   position: relative;
+}
+.cwb-custom-image-removable.service-img { max-width: 120px; }
+
+.cwb-custom-image-removable > .close {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: fit-content;
+   aspect-ratio: 1;
+   border-radius: 100%;
+   padding: 5px;
+   position: absolute;
+   top: 10px;
+   right: 10px;
+   background-color: #ff3d3d;
+   color: white;
+   cursor: pointer;
+}
+
+.cwb-custom-image-removable > img {
+   width: 100%;
+   aspect-ratio: 1;
+   object-fit: cover;
+   object-position: center;
+}
+
+.picker-wrap {
+   width: fit-content;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   min-height: fit-content;
+   background: #ffffff;
+}
+
+.picker-wrap > .pill {
+   display: inline-flex;
+   align-items: center;
+   gap: 14px;
+   padding: 8px 20px 8px 8px;
+   border-radius: 999px;
+   background: #fafafa;
+   border: 1px solid #ececec;
+   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+   cursor: pointer;
+   transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.picker-wrap > .pill:hover { border-color: #ddd; }
+
+.picker-wrap > .pill > .swatch {
+   position: relative;
+   width: 40px;
+   height: 40px;
+   border-radius: 50%;
+   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+   overflow: hidden;
+   flex-shrink: 0;
+   transition: background-color 0.15s ease;
+}
+
+.picker-wrap > .pill > .swatch > .picker-input {
+   position: absolute;
+   inset: 0;
+   width: 100%;
+   height: 100%;
+   padding: 0;
+   border: none;
+   opacity: 0;
+   cursor: pointer;
+}
+
+.picker-wrap > .pill > .divider {
+   width: 1px;
+   height: 20px;
+   background: #e5e5e5;
+}
+
+.picker-wrap > .pill > .hex-value {
+   font-size: 15px;
+   font-weight: 500;
+   letter-spacing: 0.02em;
+   color: #333;
+   min-width: 76px;
+}
+
+.cwb-custom-service-card {
+   width: 100%;
+   max-width: 350px;
+   display: flex;
+   align-items: start;
+   gap: 15px;
+   padding: 20px;
+   border-radius: 20px;
+   box-shadow: 0 1px 2px 2px rgba(0, 0, 0, 0.055);
+}
+
+.cwb-custom-service-card > .cwb-custom-service-card-image {
+   width: 130px;
+   aspect-ratio: 1;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   overflow: hidden;
+   border-radius: 20px;
+}
+
+.cwb-custom-service-card > .cwb-custom-service-card-image > img {
+   height: 100%;
+   aspect-ratio: 1;
+   object-fit: cover;
+   object-position: center;
+}
+
+.cwb-custom-service-card > .cwb-custom-service-info {
+   width: 100%;
+   max-width: 90%;
+   display: flex;
+   flex-direction: column;
+   gap: 5px;
+}
+
+.cwb-review-card {
+   width: 100%;
+   max-width: 350px;
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+   padding: 20px;
+   border-radius: 20px;
+   box-shadow: 0 1px 2px 2px rgba(0, 0, 0, 0.055);
+}

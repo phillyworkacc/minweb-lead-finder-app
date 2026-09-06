@@ -27,6 +27,8 @@ export default function LeadCollectionTable ({ leadCollections: rawLeadLists, on
       </>})
    }
 
+   console.log(rawLeadLists)
+
    return (
       <div className="table-container">
          <table className="leads-table">
@@ -45,11 +47,16 @@ export default function LeadCollectionTable ({ leadCollections: rawLeadLists, on
                            <div className="text-xs full text-left bold-600">{leadCollection.name}</div>
                            <div className="text-xxxs full text-left grey-5">{formatMilliseconds(parseInt(leadCollection.date))}</div>
                            <div className="box full dfb align-center gap-5 wrap">
-                              {leadCollection.folders.split(",").filter((lc: any) => lc !== "all").map((folderName: any) => (
-                                 <div key={folderName} className="folder-tag box fit pd-05 pdx-1">
-                                    <div className="text-xt bold-600 whitespace-nowrap">{titleCase(folderName.replaceAll("-", " "))}</div>
-                                 </div>
-                              ))}
+                              {leadCollection.folders}
+                              {!leadCollection.folders.includes(",") || leadCollection.folders == "" ? (<>
+                                 
+                              </>) : (<>
+                                 {leadCollection.folders.split(",").filter((lc: any) => lc !== "all").map((folderName: any) => (
+                                    <div key={folderName} className="folder-tag box fit pd-05 pdx-1">
+                                       <div className="text-xt bold-600 whitespace-nowrap">{titleCase(folderName.replaceAll("-", " "))}</div>
+                                    </div>
+                                 ))}
+                              </>)}
                            </div>
                         </div>
                      </td>

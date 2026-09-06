@@ -124,6 +124,11 @@ export default function AutoLeadsCardView ({ automatedLeads, currentLeadIndex }:
                className="xxxs pd-15 outline-black tiny-shadow fit pdx-15 border-radius-15 whitespace-nowrap mw-500"
                onClick={toggleStarredLead} blackSpinner
             ><Star size={16} color="#ffa010" fill="#ffa010" /> {allAutoLeads[viewingIndex].starred ? 'Un-star' : 'Star'} Lead</AwaitButton>
+            <Link href={`/custom-website-builder/${allAutoLeads[viewingIndex].leadListId}/${allAutoLeads[viewingIndex].leadId}`} target="_blank">
+               <button className="xxxs pd-15 full pdx-15 border-radius-15 whitespace-nowrap mw-500">
+                  <LayersPlus size={16} /> Build Website
+               </button>
+            </Link>
          </div>
 
          <Spacing size={2} />
