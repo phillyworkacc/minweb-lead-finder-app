@@ -25,11 +25,13 @@ export default function LeadsCardView ({ leads, currentLeadIndex }: LeadsCardVie
    function gotoPreviousLead () {
       if (viewingIndex === 0) return;
       setViewingIndex(i => i-1);
+      setAuditResult(null);
    }
    
    function gotoNextLead () {
       if (viewingIndex === (allAutoLeads.length-1)) return;
       setViewingIndex(i => i+1);
+      setAuditResult(null);
    }
 
    async function toggleStarredLead (callback: Function) {
@@ -139,31 +141,33 @@ export default function LeadsCardView ({ leads, currentLeadIndex }: LeadsCardVie
          </div>
 
          <Spacing />
-         {auditResult == null ? (<>
-            <div className="box full dfb column gap-10">
-               <Spacing size={2} />
-               <div className="text-m bold-800 full">AUDIT THIS LEAD'S WEBSITE</div>
-               <div className="text-xxs grey-5 full">Click below to generate a website audit of this lead's website so you can give them the best offer</div>
-               <div className="box full dfb align-center gap-10 mw-800">
-                  <AwaitButton className="xxxs pd-13 fit pdx-2 border-radius-20" onClick={handleAuditSite}>
-                     <LayersPlus size={17} /> Audit {allAutoLeads[viewingIndex].name}
-                  </AwaitButton>
+         {allAutoLeads[viewingIndex].website && (<>
+            {auditResult == null ? (<>
+               <div className="box full dfb column gap-10">
+                  <Spacing size={2} />
+                  <div className="text-m bold-800 full">AUDIT THIS LEAD'S WEBSITE</div>
+                  <div className="text-xxs grey-5 full">Click below to generate a website audit of this lead's website so you can give them the best offer</div>
+                  <div className="box full dfb align-center gap-10 mw-800">
+                     <AwaitButton className="xxxs pd-13 fit pdx-2 border-radius-20" onClick={handleAuditSite}>
+                        <LayersPlus size={17} /> Audit {allAutoLeads[viewingIndex].name}
+                     </AwaitButton>
+                  </div>
                </div>
-            </div>
-         </>) : (<>            
-            <div className="box full dfb column gap-10">
-               <Spacing size={2} />
-               <div className="text-l bold-800 full">AUDIT COMPLETE</div>
-               <div className="box full dfb align-center gap-10 wrap">
-                  <button className="xxxs pd-12 pdx-2 fit border-radius-15 outline-black" onClick={copyJson}>Copy JSON <Braces size={16} /></button>
+            </>) : (<>            
+               <div className="box full dfb column gap-10">
+                  <Spacing size={2} />
+                  <div className="text-l bold-800 full">AUDIT COMPLETE</div>
+                  <div className="box full dfb align-center gap-10 wrap">
+                     <button className="xxxs pd-12 pdx-2 fit border-radius-15 outline-black" onClick={copyJson}>Copy JSON <Braces size={16} /></button>
+                  </div>
+                  <Spacing />
+                  <WebsiteIntelligence 
+                     websiteScrapedInfo={auditResult.websiteScrapedInfo}
+                     websiteAudit={auditResult.audit}
+                  />
+                  <Spacing size={5} />
                </div>
-               <Spacing />
-               <WebsiteIntelligence 
-                  websiteScrapedInfo={auditResult.websiteScrapedInfo}
-                  websiteAudit={auditResult.audit}
-               />
-               <Spacing size={5} />
-            </div>
+            </>)}
          </>)}
       </div>
    )

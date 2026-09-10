@@ -21,7 +21,6 @@ export async function thomsonLocalScraper (niche: string, location: string) {
       }
    });
    const data = await response.json();
-   console.log(data);
    return data as ScraperValue;
 }
 

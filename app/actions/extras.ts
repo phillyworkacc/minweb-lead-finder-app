@@ -129,6 +129,33 @@ export async function createWebsiteAudit (websiteUrl: string, facebookUrl: strin
       const result = await response.json();
 
       if (result.success) {
+         return result.data;
+      } else {
+         console.log(result.error)
+         return false;
+      }
+   } catch (err) {
+      console.error(err);
+      return false;
+   }
+}
+
+export async function takeWebsiteScreenshot (websiteUrl: string) {
+   try {
+      const url = "https://minweb-lead-scraper-api.onrender.com/website-screenshot"
+      // DEVELOPMENT URL
+      // const url = "http://localhost:3080/website-screenshot"
+      const response = await fetch(url, {
+         method: "POST",
+         headers: {
+            "Content-type": "application/json"
+         },
+         body: JSON.stringify({ url: websiteUrl })
+      });
+      const result = await response.json();
+      console.log(result)
+
+      if (result.success) {
          console.log(result.data);
          return result.data;
       } else {
@@ -136,6 +163,7 @@ export async function createWebsiteAudit (websiteUrl: string, facebookUrl: strin
          return false;
       }
    } catch (err) {
+      console.log("api error")
       console.error(err);
       return false;
    }

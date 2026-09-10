@@ -79,13 +79,8 @@ export default function LeadCardsV2 ({ leads }: LeadCardsV2Props) {
       return leads
          .filter(lead => (
             lead.name.toLowerCase().includes(searchLeads.toLowerCase()) ||
-            lead.address.toLowerCase().includes(searchLeads.toLowerCase()) ||
-            lead.email.toLowerCase().includes(searchLeads.toLowerCase())
+            lead.address.toLowerCase().includes(searchLeads.toLowerCase())
          )) // search filter
-         .filter(lead => {
-            if (!filters.hasEmail) return true;
-            return (lead.email !== "");
-         }) // filter for has email
          .filter(lead => {
             if (!filters.hasWebsite) return true;
             return (lead.website !== null && lead.website !== undefined && lead.website !== '')

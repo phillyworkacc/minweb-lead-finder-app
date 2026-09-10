@@ -1,6 +1,6 @@
 'use client'
 import { useState } from "react";
-import { createWebsiteAudit } from "../actions/extras";
+import { createWebsiteAudit, takeWebsiteScreenshot } from "../actions/extras";
 import { ArrowUp, ArrowUpRight, Braces, RotateCcw } from "lucide-react";
 import AppContainer from "@/components/AppContainer/AppContainer"
 import Spacing from "@/components/Spacing/Spacing";
@@ -13,13 +13,16 @@ import { toast } from "sonner";
 export default function page() {
    const [url, setUrl] = useState("");
    const [auditResult, setAuditResult] = useState<any>(null);
+   const [websiteImg, setWebsiteImg] = useState<any>(null);
 
    async function handleAuditSite (callback: Function) {
       const res = await createWebsiteAudit(url, "");
-      if (res === false) {
+      const websiteScreenshot = await takeWebsiteScreenshot(url);
+      if (res === false || websiteScreenshot == false) {
          toast.error("Failed to audit website");
       } else {
          setAuditResult(res);
+         setWebsiteImg(websiteScreenshot);
       }
       callback();
    }
@@ -61,7 +64,12 @@ export default function page() {
                   <button className="xxxs pd-12 pdx-2 fit border-radius-15" onClick={auditAnotherSite}>Another Audit <RotateCcw size={16} /></button>
                   <button className="xxxs pd-12 pdx-2 fit border-radius-15 outline-black" onClick={copyJson}>Copy JSON <Braces size={16} /></button>
                </div>
-               <Spacing />
+               <Spacing size={2} />
+               <div className="box full dfb align-center gap-10 wrap mw-600 pd-1">
+                  <div className="website-screenshot-wrapper">
+                     <img src={websiteImg} alt="website screenshot" width={1280} height={720} />
+                  </div>
+               </div>
                <WebsiteIntelligence 
                   websiteScrapedInfo={auditResult.websiteScrapedInfo}
                   websiteAudit={auditResult.audit}
