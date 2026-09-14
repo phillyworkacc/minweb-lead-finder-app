@@ -160,6 +160,45 @@ export async function updateLeadStarred (leadId: string, leadCollectionsId: stri
    }
 }
 
+export async function updateProcessedLead (fullLeads: Lead[]) {
+   try {
+      const updated = await dalDbOperation(async () => {
+         let complete = false;
+         try {
+            for (let i = 0; i < fullLeads.length; i++) {
+               const lead = fullLeads[i];
+               const res = await db.update(leadsTable)
+                  .set({
+                     processedLeadData: lead.processedLeadData,
+                     starred: (JSON.parse(lead.processedLeadData).priority >= 50)
+                  })
+                  .where(and(
+                     eq(leadsTable.leadCollectionsId, lead.leadCollectionsId),
+                     eq(leadsTable.leadId, lead.leadId)
+                  ));
+
+               if (res.rowCount !== 1) {
+                  complete = false;
+                  throw new Error(`Failed to update [${lead.leadId}] ${lead.name}`);
+               } else {
+                  continue;
+               }
+            }
+
+            complete = true;
+         } catch (e) {
+            console.error(e);
+         }
+
+         return complete;
+      })
+   
+      return updated.success;
+   } catch (e) {
+      return false;
+   }
+}
+
 export async function editLeadCollectionName (leadCollectionsId: string, newName: string) {
    try {
       const updated = await dalDbOperation(async () => {

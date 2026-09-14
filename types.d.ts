@@ -16,7 +16,25 @@ type Lead = {
    phoneNumber: string;
    website: string;
    called: string;
+   processedLeadData: string;
    starred: boolean;
+}
+
+type ProcessedLeadData = {
+   priority: number;
+   bucket: string;
+   companiesHouse: {
+      active: boolean;
+      address: string;
+      companyName: string;
+      companyNumber: string;
+      companyStatus: string;
+      companyType: string;
+      dateOfCreation: string;
+      dissolved: boolean;
+      found: boolean;
+      matchConfidence: number;
+   };
 }
 
 type WebsiteAuditReport = {

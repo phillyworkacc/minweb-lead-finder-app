@@ -10,6 +10,7 @@ export const leadsTable = pgTable("leads", {
    phoneNumber: text("phone_number"),
    website: text("website"),
    called: text("called"),
+   processedLeadData: text("processed_lead_data").default(""),
    starred: boolean("starred"),
    date: text("date")
 });

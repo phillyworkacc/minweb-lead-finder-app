@@ -140,6 +140,33 @@ export default function LeadsCardView ({ leads, currentLeadIndex }: LeadsCardVie
             ><Star size={16} color="#ffa010" fill="#ffa010" /> {allAutoLeads[viewingIndex].starred ? 'Un-star' : 'Star'} Lead</AwaitButton>
          </div>
 
+         {allAutoLeads[viewingIndex].processedLeadData !== null && (<>
+            <div className="box full dfb column gap-10">
+               <Spacing size={2} />
+               <div className="text-m bold-800 full">Lead Processing Info</div>
+               <div className="text-xxs grey-5 full">Priority: {JSON.parse(allAutoLeads[viewingIndex].processedLeadData).priority}</div>
+               <div className="text-xxs grey-5 full">Bucket: {JSON.parse(allAutoLeads[viewingIndex].processedLeadData).bucket}</div>
+               <div className="text-s bold-800 full mt-15">Companies House Info</div>
+               {JSON.parse(allAutoLeads[viewingIndex].processedLeadData).companiesHouse.found ? (<>
+                  <div className="text-xxs grey-5 full">
+                     Active: {JSON.parse(allAutoLeads[viewingIndex].processedLeadData).companiesHouse.active ? "Active" : "Not Active"}
+                  </div>
+                  <div className="text-xxs grey-5 full">
+                     Address: {JSON.parse(allAutoLeads[viewingIndex].processedLeadData).companiesHouse.address}
+                  </div>
+                  <div className="text-xxs grey-5 full">
+                     Company Name: {JSON.parse(allAutoLeads[viewingIndex].processedLeadData).companiesHouse.companyName}
+                  </div>
+                  <div className="text-xxs grey-5 full">
+                     Dissolved: {JSON.parse(allAutoLeads[viewingIndex].processedLeadData).companiesHouse.dissolved ? "Dissolved" : "Not Dissolved"}
+                  </div>
+                  <div className="text-xxs grey-5 full">
+                     Match Confidence: {JSON.parse(allAutoLeads[viewingIndex].processedLeadData).companiesHouse.matchConfidence}
+                  </div>
+               </>) : (<div className="text-xxs grey-5 full">Companies House Info Not Found</div>)}
+            </div>
+         </>)}
+
          <Spacing />
          {allAutoLeads[viewingIndex].website && (<>
             {auditResult == null ? (<>

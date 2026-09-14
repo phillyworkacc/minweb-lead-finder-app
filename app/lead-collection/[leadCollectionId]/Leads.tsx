@@ -1,10 +1,11 @@
 "use client"
-import { FolderPen, Trash2, UserRound } from 'lucide-react';
+import { FolderPen, Trash2, UserRoundCheck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useModal } from '@/components/Modal/ModalContext';
 import { pluralSuffixer } from '@/lib/str';
 import { toast } from 'sonner';
-import { deleteLeadCollection } from '@/app/actions/leads';
+import { deleteLeadCollection, updateProcessedLead } from '@/app/actions/leads';
+import { processLeads } from '@/lead-processor/processLeads';
 import AppWrapper from '@/components/AppContainer/AppContainer';
 import AwaitButton from '@/components/AwaitButton/AwaitButton';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
@@ -57,6 +58,24 @@ export default function LeadCollectionPage ({ leads, leadCollectionName, leadCol
       showModal({ content: (<><EditLeadCollectionName leadCollection={leadCollection} /></>) });
    }
 
+   async function handleProcessLeads () {
+      const processedLeads = await processLeads(leads);
+      const freshlyProcessedLeads = processedLeads.map(processLead => {
+         const leadMatch = leads.find(l => l.leadId === processLead.leadId);
+         return {
+            ...leadMatch,
+            processedLeadData: JSON.stringify({
+               priority: processLead.priority,
+               bucket: processLead.bucket,
+               companiesHouse: processLead.companiesHouse
+            })
+         } as Lead;
+      });
+      console.log(freshlyProcessedLeads);
+      const updatedLeads = await updateProcessedLead(freshlyProcessedLeads);
+      alert(updatedLeads)
+   }
+
    return (
       <AppWrapper>
          <div className="box full pd-1">
@@ -74,6 +93,7 @@ export default function LeadCollectionPage ({ leads, leadCollectionName, leadCol
             </div>
             <MultiActionDropdown actions={[
                { label: <><FolderPen size={15} /> Edit Name</>, action: showEditCollectionNameModal, appearance: "normal" },
+               { label: <><UserRoundCheck size={15} /> Process Leads</>, action: handleProcessLeads, appearance: "normal" },
                { label: <><Trash2 size={15} /> Delete Lead Collection</>, action: showDeleteCollectionModal, appearance: "delete" }
             ]} />
          </div>
