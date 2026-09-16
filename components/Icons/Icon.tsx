@@ -85,6 +85,18 @@ export function CustomUserIcon ({ size, url, round }: CustomIconProps) {
    </div>
 }
 
+export function MPSIcon ({ size, round }: Omit<CustomIconProps, "url">) {
+   return <div className={`icon ${round ? 'round' : ''}`} style={{ width: `${size}px`, height: `${size}px` }}>
+      <img src={"https://static.mypocketskill.com/static/favicon/icon-32.0e55807b1674.png"} alt="icon" width={size} height={size} />
+   </div>
+}
+
+export function MPSLargeIcon ({ size, round }: Omit<CustomIconProps, "url">) {
+   return <div className={`icon ${round ? 'round' : ''}`} style={{ width: `${size}px`, height: `${size}px` }}>
+      <img src={"https://static.mypocketskill.com/static/favicon/icon-180.49d08b0f8c6d.png"} alt="icon" width={size} height={size} />
+   </div>
+}
+
 export function GoogleIcon({ size }: IconProps) {
    return (
       <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width={size} height={size} viewBox="0 0 48 48">

@@ -83,6 +83,50 @@ export async function useMinwebAiApi (prompt: string) {
    }
 }
 
+export async function createMPSAiMessage (name: string, description: string) {
+   try {
+      const groq = new Groq();
+      const prompt = `
+heres a listing: "${description}"
+the person who owns the listing is ${name}
+
+write me a message similar to this structure:
+Hello Emma,
+
+Hope you're doing well.
+
+I would like to help you create a logo and design the brand packaging for your dog tea company.
+
+And as you requested, no AI.
+
+Looking forward to working with you
+`;
+      const chatCompletion = await groq.chat.completions.create({
+         messages: [
+            {
+               role: "system",
+               content: "You generate short, human sounding cold outreach messages. Follow the user's instructions exactly."
+            },
+            {
+               role: "user",
+               content: prompt
+            }
+         ],
+         model: "openai/gpt-oss-120b",
+         temperature: 1,
+         top_p: 1,
+         max_completion_tokens: 2048,
+         stream: false,
+         reasoning_effort: "medium"
+      });
+
+      return chatCompletion.choices[0].message.content;
+   } catch (err) {
+      console.error(err)
+      return false;
+   }
+}
+
 export async function useOpenRouterAiApi (prompt: string) {
    try {
       const openrouter = new OpenRouter({

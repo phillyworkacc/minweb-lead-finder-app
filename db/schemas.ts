@@ -1,4 +1,4 @@
-import { boolean, jsonb, pgTable, serial, text } from "drizzle-orm/pg-core";
+import { boolean, integer, jsonb, pgTable, serial, text } from "drizzle-orm/pg-core";
 
 export const leadsTable = pgTable("leads", {
    id: serial("id").primaryKey(),
@@ -88,5 +88,12 @@ export const clientPreviewWebsitesTable = pgTable("client_preview_websites", {
    leadId: text("lead_id"),
    websiteId: text("website_id"),
    websiteConfig: text("website_config"),
+   createdAt: text("created_at")
+});
+
+export const mpsListingsTable = pgTable("mps_listings", {
+   listingId: integer("listing_id").primaryKey(),
+   name: text("name"),
+   description: text("description"),
    createdAt: text("created_at")
 });

@@ -180,6 +180,7 @@ export default function LeadsCardView ({ leads, currentLeadIndex }: LeadsCardVie
                      </AwaitButton>
                   </div>
                </div>
+               <Spacing size={5} />
             </>) : (<>            
                <div className="box full dfb column gap-10">
                   <Spacing size={2} />

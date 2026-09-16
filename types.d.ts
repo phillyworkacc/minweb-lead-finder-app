@@ -169,3 +169,10 @@ type Offer = {
    score: number
 }
 type LeadOffers = Offer[];
+
+type MPSListing = {
+   listingId: number;
+   name: string;
+   description: string;
+   createdAt: string;
+}

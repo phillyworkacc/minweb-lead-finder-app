@@ -5,6 +5,25 @@ import { eq } from "drizzle-orm";
 import currentUser from "@/utils/user";
 import webpush from "@/utils/webpush";
 
+export async function sendNotificationToAll (title: string, body: string, url: string) {
+   try {
+      const userSubscriptions = await db.select().from(pushNotificationsTable)
+
+      for (const userSubscription of userSubscriptions) {
+         try {
+            await webpush.sendNotification(
+               userSubscription.subscription as any,
+               JSON.stringify({ title, body, url })
+            );
+         } catch (err) {
+            await db.delete(pushNotificationsTable).where(eq(pushNotificationsTable.id, userSubscription.id))
+         }
+      }
+   } catch (err) {
+      console.error(err);
+   }
+}
+
 export async function getSubscriptionsForClient (clientId: string) {
    try {
       const userPushNotificationsSubscriptions = await db.select()
@@ -23,6 +42,7 @@ export async function notifyClientAboutLeads (notificationInfo: any) {
       const userSubscriptions: any[] = await getSubscriptionsForClient(clientId);
    
       for (const userSubscription of userSubscriptions) {
+         
          await webpush.sendNotification(
             userSubscription.subscription as any,
             JSON.stringify({
