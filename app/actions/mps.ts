@@ -4,7 +4,7 @@ import { sendNotificationToAll } from "./notifications";
 import { pluralSuffixer } from "@/lib/str";
 import { db } from "@/db";
 import { mpsListingsTable } from "@/db/schemas";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 
 export async function checkMyPocketSkill () {
    try {
@@ -47,9 +47,13 @@ export async function checkMyPocketSkill () {
       }));
       const listingsToAdd: number[] = [];
 
+      const existingListingsDb = await db
+         .select().from(mpsListingsTable)
+         .where(inArray(mpsListingsTable.listingId, [ ...finalFilteredListings.map((fl: any) => (fl.listingId)) ]));
+      const existingListingIds = existingListingsDb.map(l => l.listingId);
+
       for (const listing of finalFilteredListings) {
-         const [res] = await db.select().from(mpsListingsTable).where(eq(mpsListingsTable.listingId, listing.listingId));
-         if (!res) listingsToAdd.push(listing.listingId);
+         if (!existingListingIds.includes(listing.listingId)) listingsToAdd.push(listing.listingId);
       }
 
       const finalListings = finalFilteredListings.filter((l: any) => listingsToAdd.includes(l.listingId));
