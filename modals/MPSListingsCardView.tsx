@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react";
 import { formatMilliseconds } from "@/utils/date";
-import { ArrowUpRightFromSquare, Bot, ChevronLeft, ChevronRight, Copy } from "lucide-react";
+import { ArrowUpRightFromSquare, Bot, ChevronLeft, ChevronRight, Copy, RotateCcw } from "lucide-react";
 import { copyToClipboard } from "@/lib/str";
 import { createMPSAiMessage } from "@/app/actions/extras";
 import { toast } from "sonner";
@@ -17,6 +17,7 @@ type MPSListingsCardViewProps = {
 export default function MPSListingsCardView ({ listings, currentListingIndex }: MPSListingsCardViewProps) {
    const [allMPSListings, setAllMPSListings] = useState<MPSListing[]>(listings);
    const [viewingIndex, setViewingIndex] = useState<number>(currentListingIndex);
+   const [extraMessage, setExtraMessage] = useState("");
    const [aiResult, setAiResult] = useState<any>(null);
 
    function gotoPreviousLead () {
@@ -81,6 +82,13 @@ export default function MPSListingsCardView ({ listings, currentListingIndex }: 
             <div className="box full dfb column gap-10">
                <div className="text-m bold-800 full">Create AI Message</div>
                <div className="text-xxs grey-5 full">Click below to generate a message to send to {allMPSListings[viewingIndex].name} about their listing</div>
+               <div className="box full mw-800 pd-05">
+                  <textarea 
+                     className="xxs pd-2 pdx-2 full border-radius-20"
+                     value={extraMessage} onChange={e => setExtraMessage(e.target.value)}
+                     placeholder="Extra Ai Message"
+                  />
+               </div>
                <div className="box full dfb align-center gap-10 mw-800 pd-05">
                   <AwaitButton className="xxxs pd-13 fit pdx-2 border-radius-20" onClick={handleCreateAiMessage}>
                      <Bot size={17} /> Create Message
@@ -94,6 +102,9 @@ export default function MPSListingsCardView ({ listings, currentListingIndex }: 
                <div className="text-xs grey-5 full pd-05">{aiResult}</div>
                <div className="box full dfb align-center gap-10 wrap">
                   <button className="xxxs pd-12 pdx-2 fit border-radius-15 outline-black" onClick={handleCopyMessage}>Copy Message <Copy size={16} /></button>
+                  <AwaitButton className="xxxs pd-12 pdx-2 fit border-radius-15" onClick={handleCreateAiMessage}>
+                     Re-generate <RotateCcw size={16} />
+                  </AwaitButton>
                </div>
                <Spacing size={5} />
             </div>

@@ -1,7 +1,7 @@
 "use client"
 import "./AppContainer.css"
 import { ReactNode } from "react"
-import { MinwebLeadFinderLogo } from "../Icons/Icon";
+import { MinwebLeadFinderLogo, MPSIcon } from "../Icons/Icon";
 import { useRouter } from "next/navigation";
 import { Bell, ChevronRight, FolderRoot, House, LayoutTemplate, Menu, ScrollText, Star } from "lucide-react";
 import { useModal } from "../Modal/ModalContext";
@@ -39,6 +39,11 @@ export default function AppContainer ({ children }: AppContainerProps) {
          name: "Website Audit Tool",
          icon: <LayoutTemplate size={17} />,
          href: "/site-audit", color: "#da6f45"
+      },
+      {
+         name: "MPS Lead Tool",
+         icon: <MPSIcon size={20} />,
+         href: "/mps", color: "#ffc8e2"
       },
       {
          name: "Notifications",

@@ -39,7 +39,7 @@ export async function checkMyPocketSkill () {
          return (exists && listing.remote == true)
       })
    
-      const finalListings = filteredListings.map((listing: any) => ({
+      const finalFilteredListings = filteredListings.map((listing: any) => ({
          listingId: listing.id,
          name: listing.profile.name,
          description: listing.description,
@@ -47,20 +47,24 @@ export async function checkMyPocketSkill () {
       }));
       const listingsToAdd: number[] = [];
 
-      for (const listing of finalListings) {
+      for (const listing of finalFilteredListings) {
          const [res] = await db.select().from(mpsListingsTable).where(eq(mpsListingsTable.listingId, listing.listingId));
          if (!res) listingsToAdd.push(listing.listingId);
       }
 
-      await sendNotificationToAll(
-         `MPS Clients`,
-         `Found ${listingsToAdd.length} new ${pluralSuffixer('lead',listingsToAdd.length,'s')} on MPS`,
-         '/mps'
-      );
+      const finalListings = finalFilteredListings.filter((l: any) => listingsToAdd.includes(l.listingId));
 
-      const inserted = await db.insert(mpsListingsTable).values(finalListings.filter((l: any) => listingsToAdd.includes(l.listingId)));
-
-      return (inserted.rowCount > 0);
+      if (finalListings.length > 0) {
+         await sendNotificationToAll(
+            `MPS Clients`,
+            `Found ${listingsToAdd.length} new ${pluralSuffixer('lead',listingsToAdd.length,'s')} on MPS`,
+            '/mps'
+         );
+         const inserted = await db.insert(mpsListingsTable).values(finalListings);
+         return (inserted.rowCount > 0);
+      } else {
+         return true;
+      }
    } catch (err) {
       console.error(err);
       return false;

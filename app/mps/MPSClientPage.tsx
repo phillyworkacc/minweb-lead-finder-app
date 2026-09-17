@@ -11,7 +11,8 @@ type MPSClientPageProps = {
    listings: MPSListing[];
 }
 
-export default function MPSClientPage ({ listings }: MPSClientPageProps) {   
+export default function MPSClientPage ({ listings }: MPSClientPageProps) {
+
    async function handleCheckMps () {
       const results = await checkMyPocketSkill();
       console.log(results);

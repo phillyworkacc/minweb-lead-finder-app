@@ -83,29 +83,33 @@ export async function useMinwebAiApi (prompt: string) {
    }
 }
 
-export async function createMPSAiMessage (name: string, description: string) {
+export async function createMPSAiMessage (name: string, description: string, extraMessage?: string) {
    try {
       const groq = new Groq();
       const prompt = `
-heres a listing: "${description}"
-the person who owns the listing is ${name}
+Here's a listing: "${description}"
+The person who owns the listing is ${name}.
+${extraMessage}
 
-write me a message similar to this structure:
+Write a short, casual outreach message to this person, in a similar spirit to this example (don't copy its phrasing or structure exactly — use it only as a tone/length reference):
 Hello Emma,
 
 Hope you're doing well.
 
 I would like to help you create a logo and design the brand packaging for your dog tea company.
 
-And as you requested, no AI.
-
 Looking forward to working with you
+
+Requirements:
+- Keep it short (2-4 sentences max)
+- Sound like a real person casually reaching out, not a template or sales script
+- No corporate buzzwords ("synergy", "leverage", "reach out", "circle back")
 `;
       const chatCompletion = await groq.chat.completions.create({
          messages: [
             {
                role: "system",
-               content: "You generate short, human sounding cold outreach messages. Follow the user's instructions exactly."
+               content: "You generate short, casual, human-sounding cold outreach messages. Every message should read like it was written by a different person — vary sentence structure, openers, and sign-offs. Avoid generic freelancer/sales phrasing. Follow the user's instructions exactly."
             },
             {
                role: "user",
@@ -113,11 +117,11 @@ Looking forward to working with you
             }
          ],
          model: "openai/gpt-oss-120b",
-         temperature: 1,
-         top_p: 1,
-         max_completion_tokens: 2048,
+         temperature: 1.1,
+         top_p: 0.95,
+         max_completion_tokens: 300,
          stream: false,
-         reasoning_effort: "medium"
+         reasoning_effort: "low"
       });
 
       return chatCompletion.choices[0].message.content;
