@@ -4,7 +4,8 @@ import { sendNotificationToAll } from "./notifications";
 import { pluralSuffixer } from "@/lib/str";
 import { db } from "@/db";
 import { mpsListingsTable } from "@/db/schemas";
-import { eq, inArray } from "drizzle-orm";
+import { inArray } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export async function checkMyPocketSkill () {
    try {
@@ -65,12 +66,24 @@ export async function checkMyPocketSkill () {
             '/mps'
          );
          const inserted = await db.insert(mpsListingsTable).values(finalListings);
-         return (inserted.rowCount > 0);
+
+         revalidatePath("/mps")
+
+         return {
+            success: (inserted.rowCount > 0),
+            found: listingsToAdd.length
+         };
       } else {
-         return true;
+         return {
+            success: true,
+            found: 0
+         };
       }
    } catch (err) {
       console.error(err);
-      return false;
+      return {
+         success: false,
+         found: null
+      };
    }
 }

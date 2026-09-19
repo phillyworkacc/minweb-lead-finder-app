@@ -2,6 +2,8 @@
 import { checkMyPocketSkill } from "../actions/mps"
 import { ChevronDown } from "lucide-react";
 import { MPSIcon, MPSLargeIcon } from "@/components/Icons/Icon";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import Spacing from "@/components/Spacing/Spacing";
 import AppContainer from "@/components/AppContainer/AppContainer"
 import MPSLeads from "@/components/Table/MPSLeads";
@@ -11,13 +13,16 @@ type MPSClientPageProps = {
    listings: MPSListing[];
 }
 
-export const dynamic = "force-dynamic";
-
 export default function MPSClientPage ({ listings }: MPSClientPageProps) {
+   const router = useRouter();
 
    async function handleCheckMps () {
       const results = await checkMyPocketSkill();
-      console.log(results);
+      if (results.success) {
+         if (results.found! > 0) router.refresh();
+      } else {
+         toast.error("Couldn't find leads from MPS")
+      }
    }
 
    return (

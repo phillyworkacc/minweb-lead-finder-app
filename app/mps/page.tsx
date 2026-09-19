@@ -6,6 +6,7 @@ import { sanitise } from "@/utils/extras";
 import MPSClientPage from "./MPSClientPage";
 import AppContainer from "@/components/AppContainer/AppContainer";
 
+export const dynamic = "force-dynamic";
 
 export default async function page() {
    const listings = await dalDbOperation(async () => {
