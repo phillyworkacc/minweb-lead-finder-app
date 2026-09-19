@@ -11,6 +11,8 @@ type MPSClientPageProps = {
    listings: MPSListing[];
 }
 
+export const dynamic = "force-dynamic";
+
 export default function MPSClientPage ({ listings }: MPSClientPageProps) {
 
    async function handleCheckMps () {
