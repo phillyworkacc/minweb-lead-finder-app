@@ -83,7 +83,7 @@ export async function useMinwebAiApi (prompt: string) {
    }
 }
 
-export async function createMPSAiMessage (name: string, description: string, extraMessage?: string) {
+export async function createMPSAiMessage2 (name: string, description: string, extraMessage?: string) {
    try {
       const groq = new Groq();
       const prompt = `
@@ -125,6 +125,60 @@ Requirements:
       });
 
       return chatCompletion.choices[0].message.content;
+   } catch (err) {
+      console.error(err)
+      return false;
+   }
+}
+
+export async function createMPSAiMessage (name: string, description: string, extraMessage?: string) {
+   try {
+      const prompt = `
+Here's a listing: "${description}"
+The person who owns the listing is ${name}.
+${extraMessage}
+
+Write a short, casual outreach message to this person, in a similar spirit to this example (don't copy its phrasing or structure exactly — use it only as a tone/length reference):
+Hello Emma,
+
+Hope you're doing well.
+
+I would like to help you create a logo and design the brand packaging for your dog tea company.
+
+Looking forward to working with you
+
+Requirements:
+- Keep it short (2-4 sentences max)
+- Sound like a real person casually reaching out, not a template or sales script
+- No corporate buzzwords ("synergy", "leverage", "reach out", "circle back")
+`;
+      const response = await fetch("https://api.atria-asi.ai/v1/chat/completions", {
+         method: "POST",
+         headers: {
+            "Authorization": `Bearer ${process.env.ATRIA_KEY!}`,
+            "Content-Type": "application/json"
+         },
+         body: JSON.stringify({
+            messages: [
+               {
+                  role: "system",
+                  content: "You generate short, casual, human-sounding cold outreach messages. Every message should read like it was written by a different person — vary sentence structure, openers, and sign-offs. Avoid generic freelancer/sales phrasing. Follow the user's instructions exactly."
+               },
+               {
+                  role: "user",
+                  content: prompt
+               }
+            ],
+            model: "Atria-Dawn-Preview",
+            temperature: 1.1,
+            top_p: 0.95,
+            max_completion_tokens: 300,
+            stream: false,
+            reasoning_effort: "low"
+         })
+      })
+      const result = await response.json();
+      return result.choices[0].message.content;
    } catch (err) {
       console.error(err)
       return false;

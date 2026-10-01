@@ -99,7 +99,7 @@ export default function MPSListingsCardView ({ listings, currentListingIndex }: 
          </>) : (<>            
             <div className="box full dfb column gap-10">
                <div className="text-l bold-800 full">AI Message</div>
-               <div className="text-xs grey-5 full pd-05">{aiResult}</div>
+               <div className="text-xs grey-5 full pd-05" style={{ whiteSpace: "pre-wrap" }}>{aiResult}</div>
                <div className="box full dfb align-center gap-10 wrap">
                   <button className="xxxs pd-12 pdx-2 fit border-radius-15 outline-black" onClick={handleCopyMessage}>Copy Message <Copy size={16} /></button>
                   <AwaitButton className="xxxs pd-12 pdx-2 fit border-radius-15" onClick={handleCreateAiMessage}>
